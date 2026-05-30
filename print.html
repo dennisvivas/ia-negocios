@@ -1,0 +1,1855 @@
+<!DOCTYPE html><html lang="es"><head>
+<meta charset="utf-8">
+<title>Sistemas de IA aplicados a los negocios — Dennis Vivas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&amp;family=Instrument+Serif:ital@0;1&amp;family=JetBrains+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    /* Brand */
+    --ink: #F4F0E8;
+    --ink-dim: rgba(244, 240, 232, 0.62);
+    --ink-faint: rgba(244, 240, 232, 0.28);
+    --bg: #0B0E16;
+    --bg-2: #141826;
+    --bg-3: #1B2030;
+    --cream: #F4F0E8;
+    --cream-ink: #14171F;
+    --cream-ink-dim: rgba(20, 23, 31, 0.62);
+    --cream-ink-faint: rgba(20, 23, 31, 0.22);
+    --accent: #2D5BFF;
+    --accent-soft: #4F75FF;
+    --hairline: rgba(244, 240, 232, 0.12);
+    --hairline-dark: rgba(20, 23, 31, 0.12);
+
+    /* Type scale @ 1920x1080 */
+    --type-hero: 152px;
+    --type-display: 112px;
+    --type-title: 72px;
+    --type-subtitle: 48px;
+    --type-body: 32px;
+    --type-small: 26px;
+    --type-eyebrow: 22px;
+    --type-section-num: 280px;
+
+    /* Spacing */
+    --pad-top: 96px;
+    --pad-bottom: 96px;
+    --pad-x: 120px;
+    --gap-title: 56px;
+    --gap-item: 28px;
+
+    /* Type families */
+    --sans: "Geist", "Inter Tight", system-ui, sans-serif;
+    --serif: "Instrument Serif", "Times New Roman", serif;
+    --mono: "JetBrains Mono", ui-monospace, monospace;
+  }
+
+  html, body { margin: 0; padding: 0; background: #000; color: var(--ink); font-family: var(--sans); }
+
+  deck-stage { background: #000; }
+
+  /* Every slide */
+  section {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--sans);
+    padding: var(--pad-top) var(--pad-x) var(--pad-bottom);
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Brand isotype stamp on every slide */
+  section::before {
+    content: '';
+    position: absolute;
+    top: 36px;
+    right: 36px;
+    width: 40px;
+    height: 40px;
+    background-image: url('assets/mark-light.svg');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    z-index: 5;
+    pointer-events: none;
+    opacity: 0.95;
+  }
+  section.cream::before {
+    background-image: url('assets/mark-dark.svg');
+  }
+  section[data-nostamp]::before { display: none; }
+
+  /* --- Variants --- */
+  section.cream { background: var(--cream); color: var(--cream-ink); }
+  section.cream .ink-dim { color: var(--cream-ink-dim); }
+  section.cream .ink-faint { color: var(--cream-ink-faint); }
+  section.cream .hairline { border-color: var(--hairline-dark); }
+  section.cream .chip-mono { color: var(--cream-ink-dim); border-color: var(--hairline-dark); }
+
+  section.accent { background: var(--accent); color: var(--cream); }
+  section.accent .ink-dim { color: rgba(244, 240, 232, 0.72); }
+
+  /* --- Reusable bits --- */
+  .ink-dim { color: var(--ink-dim); }
+  .ink-faint { color: var(--ink-faint); }
+  .hairline { border-color: var(--hairline); }
+
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 24px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-dim);
+    font-weight: 500;
+  }
+  section.cream .eyebrow { color: var(--cream-ink-dim); }
+
+  .title {
+    font-family: var(--sans);
+    font-size: var(--type-title);
+    font-weight: 500;
+    letter-spacing: -0.025em;
+    line-height: 1.02;
+    margin: 0;
+    text-wrap: balance;
+  }
+  .subtitle {
+    font-family: var(--sans);
+    font-size: var(--type-subtitle);
+    font-weight: 400;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+    color: var(--ink-dim);
+    margin: 0;
+    text-wrap: pretty;
+  }
+  section.cream .subtitle { color: var(--cream-ink-dim); }
+
+  .body {
+    font-size: var(--type-body);
+    line-height: 1.35;
+    font-weight: 400;
+    letter-spacing: -0.005em;
+    margin: 0;
+    text-wrap: pretty;
+  }
+  .small {
+    font-size: var(--type-small);
+    line-height: 1.4;
+    margin: 0;
+  }
+  .serif-display {
+    font-family: var(--serif);
+    font-style: italic;
+    font-weight: 400;
+    letter-spacing: -0.01em;
+  }
+
+  .chip-mono {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 24px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 12px 22px;
+    border: 1px solid var(--hairline);
+    border-radius: 999px;
+    color: var(--ink-dim);
+  }
+
+  .footer-row {
+    position: absolute;
+    left: var(--pad-x);
+    right: var(--pad-x);
+    bottom: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-family: var(--mono);
+    font-size: 24px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+  }
+  section.cream .footer-row { color: var(--cream-ink-faint); }
+  .footer-row .left, .footer-row .right { display: flex; gap: 24px; align-items: center; }
+
+  /* Brand mark inline */
+  .mark { display: inline-flex; align-items: center; gap: 16px; }
+  .mark-svg { width: 44px; height: 44px; display: block; }
+  .mark-text {
+    font-family: var(--sans);
+    font-size: 24px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+
+  /* Hero / cover */
+  .cover-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    flex: 1;
+    align-items: end;
+    gap: 80px;
+  }
+  .cover-title {
+    font-family: var(--sans);
+    font-size: 120px;
+    font-weight: 500;
+    line-height: 0.96;
+    letter-spacing: -0.035em;
+    margin: 0;
+  }
+  .cover-title em {
+    font-family: var(--serif);
+    font-style: italic;
+    font-weight: 400;
+    letter-spacing: -0.02em;
+  }
+  .cover-meta { display: flex; flex-direction: column; gap: 16px; align-items: flex-end; text-align: right; }
+
+  /* Section divider */
+  .section-divider {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: end;
+    gap: 80px;
+  }
+  .section-num {
+    font-family: var(--sans);
+    font-size: var(--type-section-num);
+    line-height: 0.82;
+    font-weight: 500;
+    letter-spacing: -0.05em;
+    color: var(--accent);
+    margin: 0;
+  }
+  .section-name {
+    font-family: var(--sans);
+    font-size: 56px;
+    font-weight: 400;
+    line-height: 1.0;
+    letter-spacing: -0.02em;
+    margin: 0;
+  }
+  .section-blurb {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 38px;
+    line-height: 1.25;
+    color: var(--ink-dim);
+    max-width: 720px;
+    margin: 0;
+  }
+
+  /* Three columns */
+  .three-col {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 48px;
+    margin-top: var(--gap-title);
+    flex: 1;
+    align-content: start;
+  }
+  .col-card {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    padding-top: 32px;
+    border-top: 1px solid var(--hairline);
+  }
+  section.cream .col-card { border-top-color: var(--hairline-dark); }
+  .col-num {
+    font-family: var(--mono);
+    font-size: 24px;
+    letter-spacing: 0.12em;
+    color: var(--accent);
+  }
+  .col-title {
+    font-size: 38px;
+    font-weight: 500;
+    line-height: 1.1;
+    letter-spacing: -0.015em;
+    margin: 0;
+  }
+  .col-body {
+    font-size: 26px;
+    line-height: 1.4;
+    color: var(--ink-dim);
+    margin: 0;
+  }
+  section.cream .col-body { color: var(--cream-ink-dim); }
+
+  /* Big number */
+  .big-stat {
+    font-family: var(--sans);
+    font-size: 260px;
+    font-weight: 500;
+    line-height: 0.86;
+    letter-spacing: -0.05em;
+    margin: 0;
+  }
+  .big-stat-unit {
+    font-family: var(--mono);
+    font-size: 28px;
+    letter-spacing: 0.08em;
+    color: var(--ink-dim);
+    margin-top: 32px;
+    max-width: 540px;
+  }
+
+  /* Layered placeholder image */
+  .placeholder {
+    background:
+      repeating-linear-gradient(135deg, rgba(244,240,232,0.06) 0 12px, transparent 12px 24px),
+      var(--bg-2);
+    border: 1px solid var(--hairline);
+    display: flex;
+    align-items: flex-end;
+    padding: 28px;
+    font-family: var(--mono);
+    font-size: 24px;
+    letter-spacing: 0.06em;
+    color: var(--ink-dim);
+    text-transform: uppercase;
+  }
+  section.cream .placeholder {
+    background:
+      repeating-linear-gradient(135deg, rgba(20,23,31,0.06) 0 12px, transparent 12px 24px),
+      rgba(20,23,31,0.04);
+    border-color: var(--hairline-dark);
+    color: var(--cream-ink-dim);
+  }
+  .placeholder.tall { aspect-ratio: 3/4; }
+
+  /* Table */
+  .data-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: var(--gap-title);
+    font-size: 28px;
+  }
+  .data-table th, .data-table td {
+    text-align: left;
+    padding: 24px 24px;
+    border-bottom: 1px solid var(--hairline);
+    vertical-align: top;
+  }
+  .data-table th {
+    font-family: var(--mono);
+    font-size: 24px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    font-weight: 500;
+    border-bottom: 1px solid var(--hairline);
+  }
+  .data-table td.bold { font-weight: 500; }
+  .data-table td.dim { color: var(--ink-dim); }
+  .data-table td .pct { color: var(--accent); font-family: var(--mono); }
+  section.cream .data-table th, section.cream .data-table td {
+    border-bottom-color: var(--hairline-dark);
+  }
+  section.cream .data-table th { color: var(--cream-ink-faint); }
+  section.cream .data-table td.dim { color: var(--cream-ink-dim); }
+
+  /* Quote slide */
+  .quote {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 96px;
+    line-height: 1.05;
+    letter-spacing: -0.015em;
+    margin: 0;
+    max-width: 1500px;
+  }
+  .quote em { font-style: italic; }
+
+  /* Header bar at top of body slides */
+  .slide-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: var(--gap-title);
+    padding-bottom: 28px;
+    border-bottom: 1px solid var(--hairline);
+  }
+  section.cream .slide-head { border-bottom-color: var(--hairline-dark); }
+  .slide-head .title { max-width: 1200px; }
+  .slide-head-right {
+    font-family: var(--mono);
+    font-size: 24px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    white-space: nowrap;
+  }
+  section.cream .slide-head-right { color: var(--cream-ink-faint); }
+
+  /* Pattern row (use case grid) */
+  .matrix {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr 1fr 1fr;
+    gap: 0;
+    margin-top: var(--gap-title);
+    border-top: 1px solid var(--hairline);
+  }
+  section.cream .matrix { border-top-color: var(--hairline-dark); }
+  .matrix > div {
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--hairline);
+    font-size: 24px;
+    line-height: 1.3;
+  }
+  section.cream .matrix > div { border-bottom-color: var(--hairline-dark); }
+  .matrix .h {
+    font-family: var(--mono);
+    font-size: 24px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    border-bottom: 1px solid var(--hairline);
+  }
+  section.cream .matrix .h { color: var(--cream-ink-faint); border-bottom-color: var(--hairline-dark); }
+  .matrix .row-label { font-weight: 500; }
+  .matrix .dim { color: var(--ink-dim); }
+  section.cream .matrix .dim { color: var(--cream-ink-dim); }
+
+  /* Speaker bio layout */
+  .bio-grid {
+    display: grid;
+    grid-template-columns: 480px 1fr;
+    gap: 96px;
+    flex: 1;
+    align-items: start;
+  }
+  .bio-photo {
+    aspect-ratio: 3/4;
+    background:
+      repeating-linear-gradient(135deg, rgba(244,240,232,0.06) 0 12px, transparent 12px 24px),
+      var(--bg-2);
+    border: 1px solid var(--hairline);
+    display: flex;
+    align-items: flex-end;
+    padding: 24px;
+    font-family: var(--mono);
+    font-size: 24px;
+    letter-spacing: 0.06em;
+    color: var(--ink-dim);
+    text-transform: uppercase;
+  }
+  .bio-credentials {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px 48px;
+    margin-top: 48px;
+    padding-top: 32px;
+    border-top: 1px solid var(--hairline);
+  }
+  .cred-label {
+    font-family: var(--mono);
+    font-size: 18px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    padding-top: 12px;
+  }
+  .cred-value {
+    font-size: 26px;
+    line-height: 1.3;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--hairline);
+  }
+  .cred-label + .cred-value { padding-bottom: 12px; }
+  .bio-credentials > div { padding: 12px 0; border-bottom: 1px solid var(--hairline); }
+  .bio-credentials .label {
+    font-family: var(--mono);
+    font-size: 24px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: 8px;
+  }
+  .bio-credentials .value { font-size: 26px; line-height: 1.3; }
+
+  /* Two-col layout */
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    flex: 1;
+    align-items: start;
+  }
+
+  /* Stat strip */
+  .stat-strip {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    margin-top: var(--gap-title);
+    border-top: 1px solid var(--hairline);
+    border-bottom: 1px solid var(--hairline);
+  }
+  section.cream .stat-strip { border-color: var(--hairline-dark); }
+  .stat-cell { padding: 40px 32px 40px 0; border-right: 1px solid var(--hairline); }
+  section.cream .stat-cell { border-right-color: var(--hairline-dark); }
+  .stat-cell:last-child { border-right: none; }
+  .stat-cell .num {
+    font-family: var(--sans);
+    font-size: 96px;
+    line-height: 1;
+    font-weight: 500;
+    letter-spacing: -0.04em;
+    color: var(--accent);
+  }
+  .stat-cell .lab {
+    font-size: 24px;
+    line-height: 1.35;
+    color: var(--ink-dim);
+    margin-top: 16px;
+  }
+  section.cream .stat-cell .lab { color: var(--cream-ink-dim); }
+
+  /* Layer stack (4 capas) */
+  .layers { display: flex; flex-direction: column; gap: 16px; margin-top: var(--gap-title); }
+  .layer {
+    display: grid;
+    grid-template-columns: 80px 1fr 1.2fr;
+    gap: 48px;
+    align-items: baseline;
+    padding: 28px 0;
+    border-top: 1px solid var(--hairline);
+  }
+  .layer:last-child { border-bottom: 1px solid var(--hairline); }
+  .layer-num {
+    font-family: var(--mono);
+    font-size: 24px;
+    color: var(--accent);
+    padding-top: 12px;
+  }
+  .layer-name {
+    font-size: 44px;
+    font-weight: 500;
+    letter-spacing: -0.015em;
+  }
+  .layer-desc {
+    font-size: 26px;
+    line-height: 1.35;
+    color: var(--ink-dim);
+  }
+
+  /* CTA slide */
+  .cta-grid {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 80px;
+    flex: 1;
+    align-items: end;
+  }
+  .cta-actions { display: flex; flex-direction: column; gap: 32px; }
+  .cta-action {
+    display: grid;
+    grid-template-columns: 60px 1fr;
+    gap: 32px;
+    padding: 28px 0;
+    border-top: 1px solid rgba(244,240,232,0.2);
+    align-items: baseline;
+  }
+  section.accent .cta-action { border-top-color: rgba(244,240,232,0.25); }
+  .cta-action:last-child { border-bottom: 1px solid rgba(244,240,232,0.2); }
+  section.accent .cta-action:last-child { border-bottom-color: rgba(244,240,232,0.25); }
+  .cta-num {
+    font-family: var(--mono);
+    font-size: 26px;
+    letter-spacing: 0.1em;
+  }
+  .cta-text {
+    font-size: 36px;
+    line-height: 1.2;
+    font-weight: 500;
+    letter-spacing: -0.015em;
+  }
+
+  /* Thank you slide */
+  .thanks {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: end;
+  }
+  .thanks-title {
+    font-family: var(--sans);
+    font-size: 200px;
+    font-weight: 500;
+    letter-spacing: -0.04em;
+    line-height: 0.9;
+    margin: 0;
+  }
+  .thanks-title em {
+    font-family: var(--serif);
+    font-style: italic;
+    font-weight: 400;
+  }
+  .contact-list { display: flex; flex-direction: column; gap: 16px; }
+  .contact-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 20px 0;
+    border-top: 1px solid var(--hairline);
+    font-size: 28px;
+  }
+  .contact-row:last-child { border-bottom: 1px solid var(--hairline); }
+  .contact-row .lab {
+    font-family: var(--mono);
+    font-size: 24px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+  }
+
+  /* Big number sectors */
+  .sector-hero {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    gap: 80px;
+    align-items: end;
+  }
+  .sector-hero .placeholder { height: 420px; align-self: stretch; }
+
+  /* Forces three-col with serif */
+  .force-card {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+    padding: 40px 0 0;
+    border-top: 1px solid var(--hairline);
+  }
+  section.cream .force-card { border-top-color: var(--hairline-dark); }
+  .force-glyph {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 88px;
+    line-height: 1;
+    color: var(--accent);
+  }
+  .force-title {
+    font-size: 40px;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+    margin: 0;
+  }
+  .force-body {
+    font-size: 25px;
+    line-height: 1.4;
+    color: var(--ink-dim);
+    margin: 0;
+  }
+  section.cream .force-body { color: var(--cream-ink-dim); }
+</style>
+
+<!-- Speaker notes intentionally omitted (user did not request them) -->
+</head>
+<body style="">
+
+<script src="deck-stage.js"></script>
+
+<deck-stage width="1920" height="1080" style="--deck-rail-w: 188px;">
+
+<!-- ============================================================ -->
+<!-- 01 · COVER                                                    -->
+<!-- ============================================================ -->
+<section data-label="01 Portada" data-nostamp="">
+  <div class="footer-row" style="top: 56px; bottom: auto;">
+    <div class="left">
+      <span class="mark">
+        <svg class="mark-svg" viewBox="-8 -8 80 80" aria-hidden="true" style="width: 100px; height: 100px;">
+          <rect x="8" y="10" width="6" height="44" fill="#F4F0E8"></rect>
+          <path d="M14 10 H30 a18 22 0 0 1 0 44 H14 V46 H30 a10 14 0 0 0 0 -28 H14 Z" fill="#F4F0E8"></path>
+          <path d="M22 22 L32 42 L42 22 H37 L32 32 L27 22 Z" fill="#2D5BFF"></path>
+          <path d="M8 56 H56 V60 H8 Z" fill="#F4F0E8"></path>
+          <circle cx="56" cy="10" r="3" fill="#2D5BFF"></circle>
+        </svg>
+        <span class="mark-text" style=""><br></span>
+      </span>
+    </div>
+    <div class="right">
+      <span>Keynote · 2026</span>
+    </div>
+  </div>
+
+  <div class="cover-grid">
+    <div>
+      <div class="chip-mono" style="margin-bottom: 64px;"></div>
+      <h1 class="cover-title">Sistemas de <em>inteligencia artificial</em> aplicados a los negocios.</h1>
+    </div>
+    <div class="cover-meta">
+      <span class="eyebrow">El nuevo motor para</span>
+      <span class="subtitle" style="font-size: 44px; color: var(--ink); max-width: 540px;">la banca,<br>la minería<br>y la agroexportación.</span>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- 02 · SPEAKER                                                  -->
+<!-- ============================================================ -->
+<section data-label="02 Ponente">
+  <div class="slide-head">
+    <h2 class="title" style="">Dennis Vivas Zelada</h2>
+    <div class="slide-head-right" style=""><br></div>
+  </div>
+
+  <div class="bio-grid">
+    <div class="bio-photo" style="background: #14171F; padding: 0; overflow: hidden;">
+      <img src="assets/dennis-portrait.jpg" alt="Dennis Vivas" style="width: 100%; height: 100%; object-fit: cover; object-position: center top; display: block; filter: contrast(1.02);">
+    </div>
+    <div>
+      <p class="body" style="font-size: 30px; line-height: 1.45; color: var(--ink); max-width: 900px;">Empresario e ingeniero de producto especializado en el diseño y despliegue de sistemas de inteligencia artificial de grado empresarial sobre Claude, Anthropic para clientes en banca, minería y agroexportación.</p>
+
+      <div class="bio-credentials">
+        <div>
+          <div class="label">Formación</div>
+          <div class="value" style="">Universidad de Deusto · España</div>
+        </div>
+        <div>
+          <div class="label">Trayectoria</div>
+          <div class="value">10+ años emprendiendo en tecnología</div>
+        </div>
+        <div>
+          <div class="label">Liderazgo gremial</div>
+          <div class="value">Fundador, Asociación Fintech del Perú</div>
+        </div>
+        <div>
+          <div class="label">Consultoría</div>
+          <div class="value" style="">Negocios digitales, Innovación, Fintech</div>
+        </div>
+        <div>
+          <div class="label">Docencia</div>
+          <div class="value">Universidad de Santiago de Chile</div>
+        </div>
+        <div>
+          <div class="label">Posgrado</div>
+          <div class="value" style="">Candidato a MSc Computer Science · Universidad Adolfo Ibañez (Chile)</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer-row">
+    <span style=""><br></span>
+    <span style=""><br></span>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- 03 · AGENDA / ÍNDICE                                          -->
+<!-- ============================================================ -->
+<section data-label="03 Índice">
+  <div class="slide-head">
+    <h2 class="title">Índice.</h2>
+    <div class="slide-head-right">
+</div>
+  </div>
+
+  <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 0 96px; flex: 1; align-content: start;">
+
+    <a style="display: grid; grid-template-columns: 80px 1fr auto; gap: 32px; align-items: baseline; padding: 32px 0; border-top: 1px solid var(--hairline); text-decoration: none; color: inherit;">
+      <span style="font-family: var(--mono); font-size: 24px; letter-spacing: 0.12em; color: var(--accent);">01</span>
+      <span>
+        <span style="display: block; font-size: 44px; font-weight: 500; letter-spacing: -0.02em; line-height: 1.1;">Contexto</span>
+        <span style="display: block; font-size: 24px; line-height: 1.4; color: var(--ink-dim); margin-top: 10px;">
+</span>
+      </span>
+      <span></span>
+    </a>
+
+    <a style="display: grid; grid-template-columns: 80px 1fr auto; gap: 32px; align-items: baseline; padding: 32px 0; border-top: 1px solid var(--hairline); text-decoration: none; color: inherit;">
+      <span style="font-family: var(--mono); font-size: 24px; letter-spacing: 0.12em; color: var(--accent);">02</span>
+      <span>
+        <span style="display: block; font-size: 44px; font-weight: 500; letter-spacing: -0.02em; line-height: 1.1;">Casos de éxito en el mundo</span>
+        <span style="display: block; font-size: 24px; line-height: 1.4; color: var(--ink-dim); margin-top: 10px;">
+</span>
+      </span>
+      <span></span>
+    </a>
+
+    <a style="display: grid; grid-template-columns: 80px 1fr auto; gap: 32px; align-items: baseline; padding: 32px 0; border-top: 1px solid var(--hairline); text-decoration: none; color: inherit;">
+      <span style="font-family: var(--mono); font-size: 24px; letter-spacing: 0.12em; color: var(--accent);">03</span>
+      <span>
+        <span style="display: block; font-size: 44px; font-weight: 500; letter-spacing: -0.02em; line-height: 1.1;">Avances en el Perú</span>
+        <span style="display: block; font-size: 24px; line-height: 1.4; color: var(--ink-dim); margin-top: 10px;">
+</span>
+      </span>
+      <span></span>
+    </a>
+
+    <a style="display: grid; grid-template-columns: 80px 1fr auto; gap: 32px; align-items: baseline; padding: 32px 0; border-top: 1px solid var(--hairline); text-decoration: none; color: inherit;">
+      <span style="font-family: var(--mono); font-size: 24px; letter-spacing: 0.12em; color: var(--accent);">04<span style="color: var(--ink-faint);"></span></span>
+      <span>
+        <span style="display: block; font-size: 44px; font-weight: 500; letter-spacing: -0.02em; line-height: 1.1;">Aplicaciones para la Banca</span>
+        <span style="display: block; font-size: 24px; line-height: 1.4; color: var(--ink-dim); margin-top: 10px;">
+</span>
+      </span>
+      <span></span>
+    </a>
+
+    <a style="display: grid; grid-template-columns: 80px 1fr auto; gap: 32px; align-items: baseline; padding: 32px 0; border-top: 1px solid var(--hairline); text-decoration: none; color: inherit;">
+      <span style="font-family: var(--mono); font-size: 24px; letter-spacing: 0.12em; color: var(--accent);">05<span style="color: var(--ink-faint);"></span></span>
+      <span>
+        <span style="display: block; font-size: 44px; font-weight: 500; letter-spacing: -0.02em; line-height: 1.1;">Aplicaciones para la Minería</span>
+        <span style="display: block; font-size: 24px; line-height: 1.4; color: var(--ink-dim); margin-top: 10px;">
+</span>
+      </span>
+      <span></span>
+    </a>
+
+    <a style="display: grid; grid-template-columns: 80px 1fr auto; gap: 32px; align-items: baseline; padding: 32px 0; border-top: 1px solid var(--hairline); border-bottom: 1px solid var(--hairline); text-decoration: none; color: inherit;">
+      <span style="font-family: var(--mono); font-size: 24px; letter-spacing: 0.12em; color: var(--accent);">06<span style="color: var(--ink-faint);"></span></span>
+      <span>
+        <span style="display: block; font-size: 44px; font-weight: 500; letter-spacing: -0.02em; line-height: 1.1;">Aplicaciones para la Agroexportación</span>
+        <span style="display: block; font-size: 24px; line-height: 1.4; color: var(--ink-dim); margin-top: 10px;">
+</span>
+      </span>
+      <span></span>
+    </a>
+
+  </div>
+
+  <div class="footer-row">
+    <span></span>
+    <span></span>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- 04 · THE THESIS (editorial cream slide)                       -->
+<!-- ============================================================ -->
+<section data-label="04 Sección Problema">
+  <div class="footer-row" style="top: 56px; bottom: auto;">
+    <span class="eyebrow" style=""><br></span>
+    <span class="eyebrow" style=""><br></span>
+  </div>
+
+  <div class="section-divider">
+    <div>
+      <h2 class="section-num">01</h2>
+    </div>
+    <div style="padding-bottom: 24px;">
+      <p class="eyebrow" style="margin-bottom: 24px;">CONTEXTO</p>
+      <h3 class="section-name" style="margin-bottom: 40px;">El estado del arte de la inteligencia artificial</h3>
+      <p class="section-blurb">
+</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- 04 · SECTION DIVIDER · PROBLEMA                               -->
+<!-- ============================================================ -->
+
+
+<!-- ============================================================ -->
+<!-- 05 · UNPREPARED — full-bleed editorial                        -->
+<!-- ============================================================ -->
+<section data-label="05 No estamos preparados">
+  <div class="slide-head" style="margin-bottom: 32px;">
+    <h2 class="title" style="color: var(--ink); font-size: 56px; line-height: 1.1;">Inteligencia de modelos de lenguaje <span class="serif-display" style="color: var(--accent);">de frontera</span> a lo largo del tiempo.</h2>
+    <div class="slide-head-right" style="color: var(--accent);"></div>
+  </div>
+
+  <div style="flex: 1; display: flex; align-items: center; justify-content: center; padding: 16px 0;">
+    <img src="assets/frontier-llm-intelligence.png" alt="Inteligencia de modelos de lenguaje de frontera a lo largo del tiempo" style="max-width: 100%; max-height: 100%; width: auto; height: auto; display: block; object-fit: contain;">
+  </div>
+
+  <div style="display: flex; justify-content: space-between; align-items: baseline; padding-top: 20px; border-top: 1px solid var(--hairline); font-family: var(--mono); font-size: 22px; letter-spacing: 0.06em; color: var(--ink-faint);">
+    <span style="text-transform: uppercase;">FUENTE: ARTIFICIAL ANALYSIS. (2026)</span>
+    <a href="https://artificialanalysis.ai/" target="_blank" rel="noopener" style="color: var(--accent); text-decoration: none; letter-spacing: 0;"></a>
+  </div>
+</section><section data-label="07 Leyes de escalado">
+  <div class="slide-head" style="margin-bottom: 24px;">
+    <h2 class="title" style="color: var(--ink);">Las leyes de <span class="serif-display" style="color: var(--accent);">escalado</span> son reales.</h2>
+    <div class="slide-head-right" style="color: var(--accent);"></div>
+  </div>
+
+  <div style="flex: 1; position: relative; padding: 8px 0;">
+    <svg viewBox="0 0 1680 760" xmlns="http://www.w3.org/2000/svg" style="position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible;" aria-hidden="true">
+      <text x="40" y="400" font-family="JetBrains Mono, ui-monospace, monospace" font-size="22" letter-spacing="0.1em" fill="rgba(244,240,232,0.62)" text-anchor="middle" transform="rotate(-90 40 400)">LO QUE EL MODELO PUEDE HACER</text>
+
+      <line x1="320" y1="120" x2="1620" y2="120" stroke="rgba(244,240,232,0.10)" stroke-width="1"></line>
+      <line x1="320" y1="220" x2="1620" y2="220" stroke="rgba(244,240,232,0.10)" stroke-width="1"></line>
+      <line x1="320" y1="320" x2="1620" y2="320" stroke="rgba(244,240,232,0.10)" stroke-width="1"></line>
+      <line x1="320" y1="420" x2="1620" y2="420" stroke="rgba(244,240,232,0.10)" stroke-width="1"></line>
+      <line x1="320" y1="520" x2="1620" y2="520" stroke="rgba(244,240,232,0.10)" stroke-width="1"></line>
+      <line x1="320" y1="620" x2="1620" y2="620" stroke="rgba(244,240,232,0.10)" stroke-width="1"></line>
+
+      <g font-family="Geist, sans-serif" font-size="24" fill="#F4F0E8">
+        <text x="300" y="113" text-anchor="end"><tspan x="300">Genera resultados</tspan><tspan x="300" dy="28">de punta a punta</tspan></text>
+        <text x="300" y="227" text-anchor="end">Aporta criterio</text>
+        <text x="300" y="313" text-anchor="end"><tspan x="300">Es dueño de</tspan><tspan x="300" dy="28">tareas definidas</tspan></text>
+        <text x="300" y="413" text-anchor="end"><tspan x="300">Hace el trabajo</tspan><tspan x="300" dy="28">de primera revisión</tspan></text>
+        <text x="300" y="513" text-anchor="end"><tspan x="300">Resume</tspan><tspan x="300" dy="28">y redacta borradores</tspan></text>
+        <text x="300" y="627" text-anchor="end">Responde preguntas</text>
+      </g>
+
+      <path d="M 550 620 C 660 600, 720 555, 750 525 C 790 510, 815 508, 825 505 C 950 485, 1060 450, 1100 415 C 1160 360, 1190 335, 1200 320 C 1240 290, 1270 250, 1275 240 C 1310 215, 1322 200, 1325 195 C 1355 180, 1372 172, 1375 170 C 1400 150, 1420 130, 1430 120" fill="none" stroke="#F4F0E8" stroke-width="3" stroke-linecap="round"></path>
+
+      <line x1="550" y1="630" x2="550" y2="680" stroke="rgba(244,240,232,0.22)" stroke-width="1" stroke-dasharray="2 6"></line>
+      <line x1="750" y1="535" x2="750" y2="680" stroke="rgba(244,240,232,0.22)" stroke-width="1" stroke-dasharray="2 6"></line>
+      <line x1="825" y1="515" x2="825" y2="680" stroke="rgba(244,240,232,0.22)" stroke-width="1" stroke-dasharray="2 6"></line>
+      <line x1="1100" y1="425" x2="1100" y2="680" stroke="rgba(244,240,232,0.22)" stroke-width="1" stroke-dasharray="2 6"></line>
+      <line x1="1200" y1="330" x2="1200" y2="680" stroke="rgba(244,240,232,0.22)" stroke-width="1" stroke-dasharray="2 6"></line>
+      <line x1="1275" y1="250" x2="1275" y2="680" stroke="rgba(244,240,232,0.22)" stroke-width="1" stroke-dasharray="2 6"></line>
+      <line x1="1325" y1="205" x2="1325" y2="680" stroke="rgba(244,240,232,0.22)" stroke-width="1" stroke-dasharray="2 6"></line>
+      <line x1="1430" y1="130" x2="1430" y2="680" stroke="rgba(244,240,232,0.22)" stroke-width="1" stroke-dasharray="2 6"></line>
+
+      <circle cx="550" cy="620" r="9" fill="#0B0E16" stroke="#2D5BFF" stroke-width="2.5"></circle>
+      <circle cx="750" cy="525" r="9" fill="#0B0E16" stroke="#2D5BFF" stroke-width="2.5"></circle>
+      <circle cx="825" cy="505" r="9" fill="#0B0E16" stroke="#2D5BFF" stroke-width="2.5"></circle>
+      <circle cx="1100" cy="415" r="9" fill="#0B0E16" stroke="#2D5BFF" stroke-width="2.5"></circle>
+      <circle cx="1200" cy="320" r="9" fill="#0B0E16" stroke="#2D5BFF" stroke-width="2.5"></circle>
+      <circle cx="1275" cy="240" r="9" fill="#0B0E16" stroke="#2D5BFF" stroke-width="2.5"></circle>
+      <circle cx="1325" cy="195" r="9" fill="#0B0E16" stroke="#2D5BFF" stroke-width="2.5"></circle>
+      <circle cx="1375" cy="170" r="9" fill="#0B0E16" stroke="#2D5BFF" stroke-width="2.5"></circle>
+      <circle cx="1430" cy="120" r="22" fill="rgba(45,91,255,0.25)"></circle>
+      <circle cx="1430" cy="120" r="11" fill="#0B0E16" stroke="#2D5BFF" stroke-width="2.5"></circle>
+
+      <g font-family="JetBrains Mono, ui-monospace, monospace" font-size="22" fill="rgba(244,240,232,0.62)">
+        <text x="400" y="715" text-anchor="middle">2023</text>
+        <text x="700" y="715" text-anchor="middle">2024</text>
+        <text x="1000" y="715" text-anchor="middle">2025</text>
+        <text x="1300" y="715" text-anchor="middle">2026</text>
+      </g>
+
+      <g font-family="Geist, sans-serif" fill="#F4F0E8">
+        <text x="475" y="595" font-size="22" font-weight="600">Claude 2</text>
+        <text x="475" y="622" font-size="18" fill="rgba(244,240,232,0.55)" font-family="JetBrains Mono, ui-monospace, monospace" letter-spacing="0.06em">JUL 2023</text>
+
+        <text x="650" y="490" font-size="22" font-weight="600">Claude Opus 3</text>
+        <text x="650" y="517" font-size="18" fill="rgba(244,240,232,0.55)" font-family="JetBrains Mono, ui-monospace, monospace" letter-spacing="0.06em">MAR 2024</text>
+
+        <text x="855" y="470" font-size="22" font-weight="600">Claude Sonnet 3.5</text>
+        <text x="855" y="497" font-size="18" fill="rgba(244,240,232,0.55)" font-family="JetBrains Mono, ui-monospace, monospace" letter-spacing="0.06em">JUN 2024</text>
+
+        <text x="1010" y="390" font-size="22" font-weight="600">Claude Opus 4</text>
+        <text x="1010" y="417" font-size="18" fill="rgba(244,240,232,0.55)" font-family="JetBrains Mono, ui-monospace, monospace" letter-spacing="0.06em">MAY 2025</text>
+
+        <text x="1075" y="290" font-size="22" font-weight="600">Claude Sonnet 4.5</text>
+        <text x="1075" y="317" font-size="18" fill="rgba(244,240,232,0.55)" font-family="JetBrains Mono, ui-monospace, monospace" letter-spacing="0.06em">SEP 2025</text>
+
+        <text x="1175" y="210" font-size="22" font-weight="600">Claude Opus 4.5</text>
+        <text x="1175" y="237" font-size="18" fill="rgba(244,240,232,0.55)" font-family="JetBrains Mono, ui-monospace, monospace" letter-spacing="0.06em">DIC 2025</text>
+
+        <text x="1220" y="160" font-size="22" font-weight="600">Claude Opus 4.6</text>
+        <text x="1220" y="187" font-size="18" fill="rgba(244,240,232,0.55)" font-family="JetBrains Mono, ui-monospace, monospace" letter-spacing="0.06em">FEB 2026</text>
+
+        <text x="1230" y="90" font-size="24" font-weight="600" fill="#2D5BFF">Claude Mythos Preview</text>
+        <text x="1230" y="117" font-size="18" fill="rgba(45,91,255,0.75)" font-family="JetBrains Mono, ui-monospace, monospace" letter-spacing="0.06em">ABR 2026</text>
+
+        <text x="1470" y="190" font-size="22" font-weight="600"><tspan x="1470">Claude</tspan><tspan x="1470" dy="26">Opus 4.7</tspan></text>
+        <text x="1470" y="247" font-size="18" fill="rgba(244,240,232,0.55)" font-family="JetBrains Mono, ui-monospace, monospace" letter-spacing="0.06em">ABR 2026</text>
+      </g>
+    </svg>
+  </div>
+
+  <div style="display: flex; justify-content: space-between; align-items: baseline; padding-top: 20px; border-top: 1px solid var(--hairline); font-family: var(--mono); font-size: 22px; letter-spacing: 0.06em; color: var(--ink-faint);">
+    <span style="text-transform: uppercase;">FUENTE: ANTHROPIC. (2026, 5 DE MAYO). AGENTS FOR FINANCIAL SERVICES</span>
+    <a href="https://www.anthropic.com/news/finance-agents" target="_blank" rel="noopener" style="color: var(--accent); text-decoration: none; letter-spacing: 0;"></a>
+  </div>
+</section><section data-label="06 Costo de no decidir">
+  <div class="slide-head" style="margin-bottom: 32px;">
+    <h2 class="title" style="color: var(--ink);">Avances de la <span class="serif-display" style="color: var(--accent);">Inteligencia&nbsp; artificial</span> en 2026.</h2>
+    <div class="slide-head-right" style="color: var(--accent);">
+</div>
+  </div>
+
+  <div style="flex: 1; display: flex; align-items: center; justify-content: center; padding: 16px 0;">
+    <img src="assets/curva-anthropic-dark.png" alt="Curva exponencial: la programación cambió para siempre, las finanzas son lo siguiente" style="max-width: 100%; max-height: 100%; width: auto; height: auto; display: block; object-fit: contain;">
+  </div>
+
+  <div style="display: flex; justify-content: space-between; align-items: baseline; padding-top: 20px; border-top: 1px solid var(--hairline); font-family: var(--mono); font-size: 22px; letter-spacing: 0.06em; color: var(--ink-faint);">
+    <span style="text-transform: uppercase;">FUENTE: ANTHROPIC. (2026, 5 DE MAYO). AGENTS FOR FINANCIAL SERVICES</span>
+    <a href="https://www.anthropic.com/news/finance-agents" target="_blank" rel="noopener" style="color: var(--accent); text-decoration: none; letter-spacing: 0;">
+</a>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- 06 · COST OF INACTION — BIG STAT                              -->
+<!-- ============================================================ -->
+
+
+<!-- ============================================================ -->
+<!-- 07 · SECTION DIVIDER · OPORTUNIDAD                            -->
+<!-- ============================================================ -->
+<section data-label="09 Capas del stack">
+  <div class="slide-head" style="margin-bottom: 28px;">
+    <h2 class="title" style="color: var(--ink);">Capas del <span class="serif-display" style="color: var(--accent);">stack tecnológico</span>.</h2>
+    <div class="slide-head-right" style="color: var(--accent);"></div>
+  </div>
+
+  <div style="flex: 1; display: grid; grid-template-rows: 1fr 1fr 1fr; grid-template-columns: 280px 1fr 1fr 1fr; gap: 14px;">
+
+    <div style="background: rgba(244,240,232,0.06); border: 1px solid rgba(244,240,232,0.10); border-radius: 14px; padding: 28px; display: flex; flex-direction: column; justify-content: center;">
+      <div style="font-family: var(--sans); font-size: 36px; font-weight: 500; color: var(--ink); letter-spacing: -0.015em;">Resultados</div>
+      <div style="font-family: var(--mono); font-size: 18px; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(244,240,232,0.55); margin-top: 8px;">LO QUE OBTIENE EL NEGOCIO</div>
+    </div>
+
+    <div style="background: var(--bg-2); border: 1px solid var(--hairline); border-radius: 14px; padding: 28px; display: flex; flex-direction: column; gap: 14px;">
+      <div>
+        <div style="font-family: var(--serif); font-style: italic; font-size: 34px; color: var(--ink); line-height: 1.1;">Empleados más inteligentes</div>
+        <div style="font-size: 20px; color: var(--ink-dim); margin-top: 8px;">Claude al lado de cada persona.</div>
+      </div>
+      <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: auto;">
+        <span style="display: inline-block; background: var(--accent); color: var(--cream); font-family: var(--sans); font-size: 22px; font-weight: 500; padding: 8px 18px; border-radius: 8px;">Chat</span>
+        <span style="display: inline-block; background: var(--accent); color: var(--cream); font-family: var(--sans); font-size: 22px; font-weight: 500; padding: 8px 18px; border-radius: 8px;">Code</span>
+        <span style="display: inline-block; background: var(--accent); color: var(--cream); font-family: var(--sans); font-size: 22px; font-weight: 500; padding: 8px 18px; border-radius: 8px;">Cowork</span>
+      </div>
+    </div>
+
+    <div style="background: var(--bg-2); border: 1px solid var(--hairline); border-radius: 14px; padding: 28px; display: flex; flex-direction: column; gap: 14px;">
+      <div>
+        <div style="font-family: var(--serif); font-style: italic; font-size: 34px; color: var(--ink); line-height: 1.1;">Procesos más rápidos</div>
+        <div style="font-size: 20px; color: var(--ink-dim); margin-top: 8px;">Agentes que corren flujos completos.</div>
+      </div>
+      <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: auto;">
+        <span style="display: inline-block; border: 1.5px dashed var(--accent); color: var(--accent); font-family: var(--sans); font-size: 22px; font-weight: 500; padding: 6.5px 16px; border-radius: 8px;"><br></span>
+        <span style="display: inline-block; border: 1.5px dashed var(--accent); color: var(--accent); font-family: var(--sans); font-size: 22px; font-weight: 500; padding: 6.5px 16px; border-radius: 8px;"><br></span>
+        <span style="display: inline-block; border: 1.5px dashed var(--accent); color: var(--accent); font-family: var(--sans); font-size: 22px; font-weight: 500; padding: 6.5px 16px; border-radius: 8px;">Plugins</span>
+      </div>
+    </div>
+
+    <div style="background: var(--bg-2); border: 1px solid var(--hairline); border-radius: 14px; padding: 28px; display: flex; flex-direction: column; gap: 14px;">
+      <div>
+        <div style="font-family: var(--serif); font-style: italic; font-size: 34px; color: var(--ink); line-height: 1.1;">Productos transformadores</div>
+        <div style="font-size: 20px; color: var(--ink-dim); margin-top: 8px;">Experiencias para tus clientes con Claude.</div>
+      </div>
+    </div>
+
+    <div style="background: rgba(45,91,255,0.10); border: 1px solid rgba(45,91,255,0.25); border-radius: 14px; padding: 28px; display: flex; flex-direction: column; justify-content: center;">
+      <div style="font-family: var(--sans); font-size: 36px; font-weight: 500; color: var(--ink); letter-spacing: -0.015em;">Plataforma</div>
+      <div style="font-family: var(--mono); font-size: 18px; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(244,240,232,0.55); margin-top: 8px;">CÓMO LO CONSTRUYES Y OPERAS</div>
+    </div>
+
+    <div style="background: var(--bg-2); border: 1px solid var(--hairline); border-radius: 14px; padding: 28px; display: flex; flex-direction: column; gap: 14px;">
+      <div>
+        <div style="font-family: var(--serif); font-style: italic; font-size: 34px; color: var(--ink); line-height: 1.1;">Primitivas</div>
+        <div style="font-size: 20px; color: var(--ink-dim); margin-top: 8px;">Bloques de construcción para personalización total.</div>
+      </div>
+      <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: auto;">
+        <span style="display: inline-block; border: 1.5px dashed var(--accent); color: var(--accent); font-family: var(--sans); font-size: 22px; font-weight: 500; padding: 6.5px 16px; border-radius: 8px;">API</span>
+        <span style="display: inline-block; border: 1.5px dashed var(--accent); color: var(--accent); font-family: var(--sans); font-size: 22px; font-weight: 500; padding: 6.5px 16px; border-radius: 8px;">Herramientas</span>
+        <span style="display: inline-block; border: 1.5px dashed var(--accent); color: var(--accent); font-family: var(--sans); font-size: 22px; font-weight: 500; padding: 6.5px 16px; border-radius: 8px;">Skills</span>
+        <span style="display: inline-block; border: 1.5px dashed var(--accent); color: var(--accent); font-family: var(--sans); font-size: 22px; font-weight: 500; padding: 6.5px 16px; border-radius: 8px;">Conectores</span>
+        <span style="display: inline-block; border: 1.5px dashed var(--accent); color: var(--accent); font-family: var(--sans); font-size: 22px; font-weight: 500; padding: 6.5px 16px; border-radius: 8px;">Subagentes</span>
+      </div>
+    </div>
+
+    <div style="background: var(--bg-2); border: 1px solid var(--hairline); border-radius: 14px; padding: 28px; display: flex; flex-direction: column; gap: 14px;">
+      <div>
+        <div style="font-family: var(--serif); font-style: italic; font-size: 34px; color: var(--ink); line-height: 1.1;">Agentes gestionados</div>
+        <div style="font-size: 20px; color: var(--ink-dim); margin-top: 8px;">Infraestructura para agentes en producción.</div>
+      </div>
+      <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: auto;">
+        <span style="display: inline-block; border: 1.5px dashed var(--accent); color: var(--accent); font-family: var(--sans); font-size: 22px; font-weight: 500; padding: 6.5px 16px; border-radius: 8px;">Sandboxing</span>
+        <span style="display: inline-block; border: 1.5px dashed var(--accent); color: var(--accent); font-family: var(--sans); font-size: 22px; font-weight: 500; padding: 6.5px 16px; border-radius: 8px;">Harness</span>
+        <span style="display: inline-block; border: 1.5px dashed var(--accent); color: var(--accent); font-family: var(--sans); font-size: 22px; font-weight: 500; padding: 6.5px 16px; border-radius: 8px;">Orquestación</span>
+      </div>
+    </div>
+
+    <div style="background: var(--bg-2); border: 1px solid var(--hairline); border-radius: 14px; padding: 28px; display: flex; flex-direction: column; gap: 14px;">
+      <div>
+        <div style="font-family: var(--serif); font-style: italic; font-size: 34px; color: var(--ink); line-height: 1.1;">Sistema operativo</div>
+        <div style="font-size: 20px; color: var(--ink-dim); margin-top: 8px;">Despliega, gobierna y monitorea a escala.</div>
+      </div>
+      <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: auto;">
+        <span style="display: inline-block; border: 1.5px dashed var(--accent); color: var(--accent); font-family: var(--sans); font-size: 22px; font-weight: 500; padding: 6.5px 16px; border-radius: 8px;">Auth</span>
+        <span style="display: inline-block; border: 1.5px dashed var(--accent); color: var(--accent); font-family: var(--sans); font-size: 22px; font-weight: 500; padding: 6.5px 16px; border-radius: 8px;">Controles</span>
+        <span style="display: inline-block; border: 1.5px dashed var(--accent); color: var(--accent); font-family: var(--sans); font-size: 22px; font-weight: 500; padding: 6.5px 16px; border-radius: 8px;">Auditoría</span>
+      </div>
+    </div>
+
+    <div style="background: var(--accent); border-radius: 14px; padding: 28px; display: flex; flex-direction: column; justify-content: center; color: var(--cream);">
+      <div style="font-family: var(--sans); font-size: 36px; font-weight: 500; letter-spacing: -0.015em;">Modelos</div>
+      <div style="font-family: var(--mono); font-size: 18px; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(244,240,232,0.85); margin-top: 8px;">LA INTELIGENCIA SUBYACENTE</div>
+    </div>
+
+    <div style="background: var(--bg-2); border: 1px solid var(--hairline); border-radius: 14px; padding: 28px; display: flex; flex-direction: column; justify-content: center; gap: 8px;">
+      <div style="display: flex; align-items: baseline; gap: 16px;">
+        <span style="color: var(--accent); font-size: 38px; line-height: 1;">✱</span>
+        <span style="font-family: var(--serif); font-style: italic; font-size: 40px; color: var(--ink); line-height: 1;">Claude Opus</span>
+      </div>
+      <div style="font-size: 22px; color: var(--ink-dim); padding-left: 54px;">Inteligencia líder de la industria.</div>
+    </div>
+
+    <div style="background: var(--bg-2); border: 1px solid var(--hairline); border-radius: 14px; padding: 28px; display: flex; flex-direction: column; justify-content: center; gap: 8px;">
+      <div style="display: flex; align-items: baseline; gap: 16px;">
+        <span style="color: var(--accent); font-size: 38px; line-height: 1;">✱</span>
+        <span style="font-family: var(--serif); font-style: italic; font-size: 40px; color: var(--ink); line-height: 1;">Claude Sonnet</span>
+      </div>
+      <div style="font-size: 22px; color: var(--ink-dim); padding-left: 54px;">Inteligencia de uso general.</div>
+    </div>
+
+    <div style="background: var(--bg-2); border: 1px solid var(--hairline); border-radius: 14px; padding: 28px; display: flex; flex-direction: column; justify-content: center; gap: 8px;">
+      <div style="display: flex; align-items: baseline; gap: 16px;">
+        <span style="color: var(--accent); font-size: 38px; line-height: 1;">✱</span>
+        <span style="font-family: var(--serif); font-style: italic; font-size: 40px; color: var(--ink); line-height: 1;">Claude Haiku</span>
+      </div>
+      <div style="font-size: 22px; color: var(--ink-dim); padding-left: 54px;">Inteligencia costo-efectiva.</div>
+    </div>
+
+  </div>
+
+  <div style="display: flex; justify-content: space-between; align-items: baseline; padding-top: 18px; margin-top: 18px; border-top: 1px solid var(--hairline); font-family: var(--mono); font-size: 22px; letter-spacing: 0.06em; color: var(--ink-faint);">
+    <span style="text-transform: uppercase;">FUENTE: ANTHROPIC. (2026, 5 DE MAYO). AGENTS FOR FINANCIAL SERVICES</span>
+    <span></span>
+  </div>
+</section><section data-label="07 Sección Oportunidad">
+  <div class="footer-row" style="top: 56px; bottom: auto;">
+    <span class="eyebrow"></span>
+    <span class="eyebrow">
+</span>
+  </div>
+
+  <div class="section-divider">
+    <div>
+      <h2 class="section-num">02</h2>
+    </div>
+    <div style="padding-bottom: 24px;">
+      <p class="eyebrow" style="margin-bottom: 24px;">CASOS DE ÉXITO EN EL MUNDO</p>
+      <h3 class="section-name" style="margin-bottom: 40px;">Principales resultados</h3>
+      <p class="section-blurb">
+</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- 08 · INFLECTION POINT — STAT STRIP                            -->
+<!-- ============================================================ -->
+
+
+<!-- ============================================================ -->
+<!-- 09 · FROM DEMO TO PRODUCTION                                  -->
+<!-- ============================================================ -->
+
+
+<!-- ============================================================ -->
+<!-- 09b · CODING → FINANCE EXPONENTIAL                            -->
+<!-- ============================================================ -->
+
+
+<!-- ============================================================ -->
+<!-- 10 · SECTION DIVIDER · SOLUCIÓN                               -->
+<!-- ============================================================ -->
+<section data-label="10 Ingresos por empleado">
+  <div class="slide-head" style="margin-bottom: 16px;">
+    <h2 class="title" style="color: var(--ink); font-size: 52px; line-height: 1.1;">Ingresos anualizados <span class="serif-display" style="color: var(--accent);">por empleado</span>, ajustados por inflación.</h2>
+    <div class="slide-head-right" style="color: var(--accent);"></div>
+  </div>
+
+  <p style="font-size: 26px; color: var(--ink-dim); max-width: 1300px; margin: 0 0 24px; line-height: 1.35;">
+    Anthropic y OpenAI generan más ingresos por empleado que las grandes tecnológicas que cotizan en bolsa.
+  </p>
+
+  <div style="display: flex; justify-content: flex-end; gap: 36px; margin-bottom: 18px; font-family: var(--mono); font-size: 22px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-dim);">
+    <span style="display: inline-flex; align-items: center; gap: 12px;">
+      <span style="width: 22px; height: 14px; background: var(--accent); border-radius: 2px; display: inline-block;"></span>ACTUAL
+    </span>
+    <span style="display: inline-flex; align-items: center; gap: 12px;">
+      <span style="width: 22px; height: 14px; background: rgba(244,240,232,0.35); border-radius: 2px; display: inline-block;"></span>EN IPO
+    </span>
+  </div>
+
+  <div style="flex: 1; display: grid; grid-template-columns: 140px 1fr; column-gap: 28px; row-gap: 14px; align-content: start;">
+    <div></div>
+    <div style="position: relative; height: 26px; font-family: var(--mono); font-size: 20px; color: var(--ink-dim);">
+      <span style="position: absolute; left: 0%; transform: translateX(-50%);">$0</span>
+      <span style="position: absolute; left: 20%; transform: translateX(-50%);">$2M</span>
+      <span style="position: absolute; left: 40%; transform: translateX(-50%);">$4M</span>
+      <span style="position: absolute; left: 60%; transform: translateX(-50%);">$6M</span>
+      <span style="position: absolute; left: 80%; transform: translateX(-50%);">$8M</span>
+      <span style="position: absolute; left: 100%; transform: translateX(-50%);">$10M</span>
+    </div>
+
+    <div style="display: flex; align-items: center; font-size: 28px; color: var(--ink); font-weight: 500;">Anthropic</div>
+    <div style="position: relative; padding: 4px 0;">
+      <div style="position: absolute; inset: 0; pointer-events: none;">
+        <div style="position: absolute; top: 0; bottom: 0; left: 20%; width: 1px; background: rgba(244,240,232,0.08);"></div>
+        <div style="position: absolute; top: 0; bottom: 0; left: 40%; width: 1px; background: rgba(244,240,232,0.08);"></div>
+        <div style="position: absolute; top: 0; bottom: 0; left: 60%; width: 1px; background: rgba(244,240,232,0.08);"></div>
+        <div style="position: absolute; top: 0; bottom: 0; left: 80%; width: 1px; background: rgba(244,240,232,0.08);"></div>
+        <div style="position: absolute; top: 0; bottom: 0; left: 100%; width: 1px; background: rgba(244,240,232,0.08);"></div>
+      </div>
+      <div style="display: flex; align-items: center; gap: 14px; height: 38px;">
+        <div style="width: 90%; height: 100%; background: var(--accent); border-radius: 3px;"></div>
+        <span style="font-size: 24px; color: var(--ink); font-weight: 500; white-space: nowrap;">$9.0M</span>
+      </div>
+    </div>
+
+    <div style="display: flex; align-items: center; font-size: 28px; color: var(--ink); font-weight: 500;">OpenAI</div>
+    <div style="position: relative; padding: 4px 0;">
+      <div style="position: absolute; inset: 0; pointer-events: none;">
+        <div style="position: absolute; top: 0; bottom: 0; left: 20%; width: 1px; background: rgba(244,240,232,0.08);"></div>
+        <div style="position: absolute; top: 0; bottom: 0; left: 40%; width: 1px; background: rgba(244,240,232,0.08);"></div>
+        <div style="position: absolute; top: 0; bottom: 0; left: 60%; width: 1px; background: rgba(244,240,232,0.08);"></div>
+        <div style="position: absolute; top: 0; bottom: 0; left: 80%; width: 1px; background: rgba(244,240,232,0.08);"></div>
+        <div style="position: absolute; top: 0; bottom: 0; left: 100%; width: 1px; background: rgba(244,240,232,0.08);"></div>
+      </div>
+      <div style="display: flex; align-items: center; gap: 14px; height: 38px;">
+        <div style="width: 56%; height: 100%; background: var(--accent); border-radius: 3px;"></div>
+        <span style="font-size: 24px; color: var(--ink); font-weight: 500; white-space: nowrap;">$5.6M</span>
+      </div>
+    </div>
+
+    <div style="display: flex; align-items: center; font-size: 28px; color: var(--ink); font-weight: 500;">Nvidia</div>
+    <div style="position: relative; padding: 4px 0;">
+      <div style="position: absolute; inset: 0; pointer-events: none;">
+        <div style="position: absolute; top: 0; bottom: 0; left: 20%; width: 1px; background: rgba(244,240,232,0.08);"></div>
+        <div style="position: absolute; top: 0; bottom: 0; left: 40%; width: 1px; background: rgba(244,240,232,0.08);"></div>
+        <div style="position: absolute; top: 0; bottom: 0; left: 60%; width: 1px; background: rgba(244,240,232,0.08);"></div>
+        <div style="position: absolute; top: 0; bottom: 0; left: 80%; width: 1px; background: rgba(244,240,232,0.08);"></div>
+        <div style="position: absolute; top: 0; bottom: 0; left: 100%; width: 1px; background: rgba(244,240,232,0.08);"></div>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 4px;">
+        <div style="display: flex; align-items: center; gap: 14px; height: 26px;">
+          <div style="width: 51%; height: 100%; background: var(--accent); border-radius: 3px;"></div>
+          <span style="font-size: 22px; color: var(--ink); font-weight: 500; white-space: nowrap;">$5.1M</span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 14px; height: 26px;">
+          <div style="width: 23%; height: 100%; background: rgba(244,240,232,0.35); border-radius: 3px;"></div>
+          <span style="font-size: 22px; color: var(--ink-dim); white-space: nowrap;">$2.3M</span>
+        </div>
+      </div>
+    </div>
+
+    <div style="display: flex; align-items: center; font-size: 28px; color: var(--ink); font-weight: 500;">Meta</div>
+    <div style="position: relative; padding: 4px 0;">
+      <div style="position: absolute; inset: 0; pointer-events: none;">
+        <div style="position: absolute; top: 0; bottom: 0; left: 20%; width: 1px; background: rgba(244,240,232,0.08);"></div>
+        <div style="position: absolute; top: 0; bottom: 0; left: 40%; width: 1px; background: rgba(244,240,232,0.08);"></div>
+        <div style="position: absolute; top: 0; bottom: 0; left: 60%; width: 1px; background: rgba(244,240,232,0.08);"></div>
+        <div style="position: absolute; top: 0; bottom: 0; left: 80%; width: 1px; background: rgba(244,240,232,0.08);"></div>
+        <div style="position: absolute; top: 0; bottom: 0; left: 100%; width: 1px; background: rgba(244,240,232,0.08);"></div>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 4px;">
+        <div style="display: flex; align-items: center; gap: 14px; height: 26px;">
+          <div style="width: 25%; height: 100%; background: var(--accent); border-radius: 3px;"></div>
+          <span style="font-size: 22px; color: var(--ink); font-weight: 500; white-space: nowrap;">$2.5M</span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 14px; height: 26px;">
+          <div style="width: 17%; height: 100%; background: rgba(244,240,232,0.35); border-radius: 3px;"></div>
+          <span style="font-size: 22px; color: var(--ink-dim); white-space: nowrap;">$1.7M</span>
+        </div>
+      </div>
+    </div>
+
+    <div style="display: flex; align-items: center; font-size: 28px; color: var(--ink); font-weight: 500;">Apple</div>
+    <div style="position: relative; padding: 4px 0;">
+      <div style="position: absolute; inset: 0; pointer-events: none;">
+        <div style="position: absolute; top: 0; bottom: 0; left: 20%; width: 1px; background: rgba(244,240,232,0.08);"></div>
+        <div style="position: absolute; top: 0; bottom: 0; left: 40%; width: 1px; background: rgba(244,240,232,0.08);"></div>
+        <div style="position: absolute; top: 0; bottom: 0; left: 60%; width: 1px; background: rgba(244,240,232,0.08);"></div>
+        <div style="position: absolute; top: 0; bottom: 0; left: 80%; width: 1px; background: rgba(244,240,232,0.08);"></div>
+        <div style="position: absolute; top: 0; bottom: 0; left: 100%; width: 1px; background: rgba(244,240,232,0.08);"></div>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 4px;">
+        <div style="display: flex; align-items: center; gap: 14px; height: 26px;">
+          <div style="width: 25%; height: 100%; background: var(--accent); border-radius: 3px;"></div>
+          <span style="font-size: 22px; color: var(--ink); font-weight: 500; white-space: nowrap;">$2.5M</span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 14px; height: 26px;">
+          <div style="width: 6%; height: 100%; background: rgba(244,240,232,0.35); border-radius: 3px;"></div>
+          <span style="font-size: 22px; color: var(--ink-dim); white-space: nowrap;">$0.6M</span>
+        </div>
+      </div>
+    </div>
+
+    <div style="display: flex; align-items: center; font-size: 28px; color: var(--ink); font-weight: 500;">Google</div>
+    <div style="position: relative; padding: 4px 0;">
+      <div style="position: absolute; inset: 0; pointer-events: none;">
+        <div style="position: absolute; top: 0; bottom: 0; left: 20%; width: 1px; background: rgba(244,240,232,0.08);"></div>
+        <div style="position: absolute; top: 0; bottom: 0; left: 40%; width: 1px; background: rgba(244,240,232,0.08);"></div>
+        <div style="position: absolute; top: 0; bottom: 0; left: 60%; width: 1px; background: rgba(244,240,232,0.08);"></div>
+        <div style="position: absolute; top: 0; bottom: 0; left: 80%; width: 1px; background: rgba(244,240,232,0.08);"></div>
+        <div style="position: absolute; top: 0; bottom: 0; left: 100%; width: 1px; background: rgba(244,240,232,0.08);"></div>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 4px;">
+        <div style="display: flex; align-items: center; gap: 14px; height: 26px;">
+          <div style="width: 21%; height: 100%; background: var(--accent); border-radius: 3px;"></div>
+          <span style="font-size: 22px; color: var(--ink); font-weight: 500; white-space: nowrap;">$2.1M</span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 14px; height: 26px;">
+          <div style="width: 21%; height: 100%; background: rgba(244,240,232,0.35); border-radius: 3px;"></div>
+          <span style="font-size: 22px; color: var(--ink-dim); white-space: nowrap;">$2.1M</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <p style="font-size: 20px; color: var(--ink-faint); font-style: italic; margin: 18px 0 0; max-width: 1500px;">
+    Los ingresos por empleado de Anthropic y OpenAI usan el conteo de personal para evitar desfasajes entre fechas de reporte.
+  </p>
+
+  <div style="display: flex; justify-content: space-between; align-items: baseline; padding-top: 16px; margin-top: 16px; border-top: 1px solid var(--hairline); font-family: var(--mono); font-size: 22px; letter-spacing: 0.06em; color: var(--ink-faint);">
+    <span style="text-transform: uppercase;">FUENTE: EMBERSON, L. (2026, 8 DE MAYO). EPOCH AI</span>
+    <span></span>
+  </div>
+</section><section data-label="11 Caso Medvi">
+  <div style="display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 28px;">
+    <span class="eyebrow" style="color: var(--accent);">CASO DE ÉXITO · TELESALUD</span>
+    <span class="eyebrow" style="color: var(--ink-faint);">
+</span>
+  </div>
+
+  <div style="flex: 1; display: grid; grid-template-columns: 1.1fr 1fr; gap: 56px; align-items: stretch;">
+
+    <div style="display: flex; flex-direction: column; justify-content: space-between;">
+      <div>
+        <h2 style="font-family: var(--sans); font-size: 88px; font-weight: 500; line-height: 0.98; letter-spacing: -0.03em; color: var(--ink); margin: 0; text-wrap: balance;">
+
+
+
+Una empresa de $1.8B en ventas anuales con dos empleados.</h2>
+
+        <p style="font-size: 28px; line-height: 1.4; color: var(--ink-dim); max-width: 720px; margin: 36px 0 0;">
+</p>
+      </div>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 16px;">
+
+      <div style="background: var(--accent); color: var(--cream); padding: 32px 36px; border-radius: 14px;">
+        <div style="font-family: var(--mono); font-size: 20px; letter-spacing: 0.08em; text-transform: uppercase; opacity: 0.85;">Proyección 2026</div>
+        <div style="font-family: var(--sans); font-size: 132px; font-weight: 500; line-height: 0.9; letter-spacing: -0.04em; margin-top: 8px;">$1.8B</div>
+        <div style="font-size: 22px; opacity: 0.9; margin-top: 12px;">en ventas anualizadas · ~$3M / día.</div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px;">
+        <div style="background: var(--bg-2); border: 1px solid var(--hairline); padding: 20px; border-radius: 12px;">
+          <div style="font-size: 42px; font-weight: 500; color: var(--ink); letter-spacing: -0.02em; line-height: 1;">$401M</div>
+          <div style="font-family: var(--mono); font-size: 18px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-dim); margin-top: 10px;">Año 1 (2025)</div>
+        </div>
+        <div style="background: var(--bg-2); border: 1px solid var(--hairline); padding: 20px; border-radius: 12px;">
+          <div style="font-size: 42px; font-weight: 500; color: var(--ink); letter-spacing: -0.02em; line-height: 1;">16.2%</div>
+          <div style="font-family: var(--mono); font-size: 18px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-dim); margin-top: 10px;">Margen neto</div>
+        </div>
+        <div style="background: var(--bg-2); border: 1px solid var(--hairline); padding: 20px; border-radius: 12px;">
+          <div style="font-size: 42px; font-weight: 500; color: var(--ink); letter-spacing: -0.02em; line-height: 1;">250k</div>
+          <div style="font-family: var(--mono); font-size: 18px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-dim); margin-top: 10px;">Clientes acum.</div>
+        </div>
+      </div>
+
+      <div style="background: var(--bg-2); border: 1px solid var(--hairline); padding: 22px 26px; border-radius: 12px;">
+        <div style="font-family: var(--mono); font-size: 18px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-dim); margin-bottom: 14px;">Stack de IA utilizado</div>
+        <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+          <span style="display: inline-block; border: 1.5px dashed var(--accent); color: var(--accent); font-size: 20px; font-weight: 500; padding: 6px 14px; border-radius: 6px;">Claude</span>
+          <span style="display: inline-block; border: 1.5px dashed var(--accent); color: var(--accent); font-size: 20px; font-weight: 500; padding: 6px 14px; border-radius: 6px;">ChatGPT</span>
+          <span style="display: inline-block; border: 1.5px dashed var(--accent); color: var(--accent); font-size: 20px; font-weight: 500; padding: 6px 14px; border-radius: 6px;">Grok</span>
+          <span style="display: inline-block; border: 1.5px dashed var(--accent); color: var(--accent); font-size: 20px; font-weight: 500; padding: 6px 14px; border-radius: 6px;">MidJourney</span>
+          <span style="display: inline-block; border: 1.5px dashed var(--accent); color: var(--accent); font-size: 20px; font-weight: 500; padding: 6px 14px; border-radius: 6px;">Runway</span>
+          <span style="display: inline-block; border: 1.5px dashed var(--accent); color: var(--accent); font-size: 20px; font-weight: 500; padding: 6px 14px; border-radius: 6px;">ElevenLabs</span>
+        </div>
+      </div>
+
+      <div style="padding: 14px 24px; background: var(--bg-2); border: 1px solid var(--hairline); border-radius: 12px;">
+        <div style="font-size: 22px; color: var(--ink-dim); line-height: 1.3;">vs. <span style="color: var(--ink); font-weight: 500;">Hims &amp; Hers</span> (2,400+ empleados): margen neto <span style="color: var(--ink); font-weight: 500;">5.5%</span>.</div>
+      </div>
+    </div>
+
+  </div>
+
+  <div style="display: flex; justify-content: space-between; align-items: baseline; padding-top: 16px; margin-top: 22px; border-top: 1px solid var(--hairline); font-family: var(--mono); font-size: 22px; letter-spacing: 0.06em; color: var(--ink-faint);">
+    <span style="text-transform: uppercase;">FUENTE: THE NEW YORK TIMES. (2026, 2 DE ABRIL). AI BILLION-DOLLAR COMPANY MEDVI</span>
+    <span></span>
+  </div>
+</section><section data-label="10 Sección Solución">
+  <div class="footer-row" style="top: 56px; bottom: auto;">
+    <span class="eyebrow"></span>
+    <span class="eyebrow">
+</span>
+  </div>
+
+  <div class="section-divider">
+    <div>
+      <h2 class="section-num">03</h2>
+    </div>
+    <div style="padding-bottom: 24px;">
+      <p class="eyebrow" style="margin-bottom: 24px;">avances en el perú</p>
+      <h3 class="section-name" style="margin-bottom: 40px;">Las reglas de juego están dadas.</h3>
+      <p class="section-blurb" style=""><br></p>
+    </div>
+  </div>
+</section>
+
+<section data-label="15 Marco normativo IA · Detalle">
+  <div style="display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 28px;">
+    <span class="eyebrow" style="color: var(--accent);">AVANCES EN EL PERÚ · MARCO NORMATIVO IA</span>
+    <span class="eyebrow" style="color: var(--ink-faint);"><br></span>
+  </div>
+
+  <h2 class="title" style="color: var(--ink); font-size: 56px; line-height: 1.05; margin: 0 0 36px;">Tres hitos que definen las <span class="serif-display" style="color: var(--accent);">reglas de juego</span> en el Perú.</h2>
+
+  <div style="position: relative; height: 40px; margin: 0 60px 8px;">
+    <div style="position: absolute; left: 0; right: 0; top: 50%; height: 2px; background: var(--hairline);"></div>
+    <div style="position: absolute; left: 16.6%; top: 50%; transform: translate(-50%, -50%); width: 22px; height: 22px; background: var(--accent); border-radius: 50%; box-shadow: 0 0 0 6px rgba(45,91,255,0.18);"></div>
+    <div style="position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); width: 22px; height: 22px; background: var(--accent); border-radius: 50%; box-shadow: 0 0 0 6px rgba(45,91,255,0.18);"></div>
+    <div style="position: absolute; left: 83.3%; top: 50%; transform: translate(-50%, -50%); width: 22px; height: 22px; background: var(--accent); border-radius: 50%; box-shadow: 0 0 0 6px rgba(45,91,255,0.18);"></div>
+  </div>
+
+  <div style="flex: 1; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 24px; align-items: stretch;">
+
+    <div style="display: flex; flex-direction: column; padding: 28px; background: var(--bg-2); border: 1px solid var(--hairline); border-radius: 14px;">
+      <div style="font-family: var(--mono); font-size: 18px; letter-spacing: 0.08em; color: var(--accent); text-transform: uppercase;">5 julio 2023</div>
+      <h3 style="font-size: 32px; font-weight: 500; color: var(--ink); margin: 8px 0 4px; line-height: 1.15; letter-spacing: -0.015em;">Ley N° 31814</h3>
+      <div class="serif-display" style="font-size: 26px; color: var(--ink-dim); line-height: 1.25; margin-bottom: 18px;">Ley que promueve el uso de la IA para el desarrollo económico y social.</div>
+
+      <div style="border-top: 1px solid var(--hairline); padding-top: 16px; margin-top: auto;">
+        <div style="font-family: var(--mono); font-size: 16px; letter-spacing: 0.08em; color: var(--ink-faint); text-transform: uppercase; margin-bottom: 12px;">3 ideas principales</div>
+        <ol style="margin: 0; padding-left: 22px; font-size: 20px; line-height: 1.4; color: var(--ink); display: flex; flex-direction: column; gap: 10px;">
+          <li>Define la IA como tecnología de propósito general al servicio del bienestar, privilegiando a la persona y los derechos humanos.</li>
+          <li>Fija principios rectores: enfoque basado en riesgos, pluralidad de actores, gobernanza ética, privacidad y seguridad.</li>
+          <li>Designa a la PCM (SGTD) como Autoridad Nacional y manda al Ejecutivo reglamentar en 90 días hábiles.</li>
+        </ol>
+      </div>
+    </div>
+
+    <div style="display: flex; flex-direction: column; padding: 28px; background: var(--bg-2); border: 1px solid var(--hairline); border-radius: 14px;">
+      <div style="font-family: var(--mono); font-size: 18px; letter-spacing: 0.08em; color: var(--accent); text-transform: uppercase;">9 septiembre 2025</div>
+      <h3 style="font-size: 32px; font-weight: 500; color: var(--ink); margin: 8px 0 4px; line-height: 1.15; letter-spacing: -0.015em;">DS N° 115-2025-PCM</h3>
+      <div class="serif-display" style="font-size: 26px; color: var(--ink-dim); line-height: 1.25; margin-bottom: 18px;">Reglamento de la Ley 31814 · vigente desde el 22 de enero de 2026.</div>
+
+      <div style="border-top: 1px solid var(--hairline); padding-top: 16px; margin-top: auto;">
+        <div style="font-family: var(--mono); font-size: 16px; letter-spacing: 0.08em; color: var(--ink-faint); text-transform: uppercase; margin-bottom: 12px;">3 ideas principales</div>
+        <ol style="margin: 0; padding-left: 22px; font-size: 20px; line-height: 1.4; color: var(--ink); display: flex; flex-direction: column; gap: 10px;">
+          <li>Clasifica los sistemas de IA por riesgo: uso indebido (prohibido), riesgo alto y riesgo aceptable.</li>
+          <li>Obligaciones para el sector privado: políticas internas, transparencia algorítmica, supervisión humana y evaluación de impacto.</li>
+          <li>Cronograma gradual por sector: salud / educación / finanzas → 2026 · transporte → 2027 · minería y agro → 2028.</li>
+        </ol>
+      </div>
+    </div>
+
+    <div style="display: flex; flex-direction: column; padding: 28px; background: var(--bg-2); border: 1px solid var(--accent); border-radius: 14px;">
+      <div style="font-family: var(--mono); font-size: 18px; letter-spacing: 0.08em; color: var(--accent); text-transform: uppercase;">29 abril 2026</div>
+      <h3 style="font-size: 32px; font-weight: 500; color: var(--ink); margin: 8px 0 4px; line-height: 1.15; letter-spacing: -0.015em;">RM N° 152-2026-PCM</h3>
+      <div class="serif-display" style="font-size: 26px; color: var(--ink-dim); line-height: 1.25; margin-bottom: 18px;">Estrategia Nacional de Inteligencia Artificial (ENIA).</div>
+
+      <div style="border-top: 1px solid var(--hairline); padding-top: 16px; margin-top: auto;">
+        <div style="font-family: var(--mono); font-size: 16px; letter-spacing: 0.08em; color: var(--ink-faint); text-transform: uppercase; margin-bottom: 12px;">3 ideas principales</div>
+        <ol style="margin: 0; padding-left: 22px; font-size: 20px; line-height: 1.4; color: var(--ink); display: flex; flex-direction: column; gap: 10px;">
+          <li>Define los ejes estratégicos del país: talento, datos, infraestructura, gobernanza y adopción sectorial.</li>
+          <li>Articula al Estado, la academia, el sector privado y la sociedad civil bajo la rectoría de la PCM-SGTD.</li>
+          <li>Traza metas operativas hacia 2030 para hacer del Perú un país competitivo en IA en la región.</li>
+        </ol>
+      </div>
+    </div>
+
+  </div>
+
+  <div style="display: flex; justify-content: space-between; align-items: baseline; padding-top: 16px; margin-top: 24px; border-top: 1px solid var(--hairline); font-family: var(--mono); font-size: 22px; letter-spacing: 0.06em; color: var(--ink-faint);">
+    <span style="text-transform: uppercase;">FUENTE: DIARIO oficial EL PERUANo</span>
+    <span></span>
+  </div>
+</section><section data-label="14 Sección Banca">
+  <div class="footer-row" style="top: 56px; bottom: auto;">
+    <span class="eyebrow"></span>
+    <span class="eyebrow"></span>
+  </div>
+
+  <div class="section-divider">
+    <div>
+      <h2 class="section-num">04</h2>
+    </div>
+    <div style="padding-bottom: 24px;">
+      <p class="eyebrow" style="margin-bottom: 24px;">BANCA</p>
+      <h3 class="section-name" style="margin-bottom: 40px;">La programación cambio para siempre. Las finanzas es lo siguiente.</h3>
+      <p class="section-blurb"></p>
+    </div>
+  </div>
+</section><section data-label="12 Casos empresariales">
+  <div style="display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 28px;">
+    <span class="eyebrow" style="color: var(--accent);">CASOS DE ÉXITO · ADOPCIÓN EMPRESARIAL</span>
+    <span class="eyebrow" style="color: var(--ink-faint);"><br></span>
+  </div>
+
+  <div style="flex: 1; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 24px;">
+
+    <div style="display: flex; flex-direction: column; padding: 36px 32px; background: var(--bg-2); border: 1px solid var(--hairline); border-radius: 14px;">
+      <div style="display: flex; align-items: center; gap: 14px; margin-bottom: 32px;">
+        <span style="font-family: var(--sans); font-size: 32px; font-weight: 600; color: var(--accent); letter-spacing: -0.02em;">Allianz</span>
+        <svg viewBox="0 0 32 32" width="28" height="28" aria-hidden="true">
+          <circle cx="16" cy="16" r="15" fill="none" stroke="var(--accent)" stroke-width="2"></circle>
+          <path d="M16 6 L20 16 L16 26 L12 16 Z" fill="var(--accent)"></path>
+        </svg>
+      </div>
+      <h3 class="serif-display" style="font-size: 38px; line-height: 1.1; color: var(--ink); margin: 0 0 36px;">Un compañero de trabajo para cada suscriptor y analista de siniestros.</h3>
+      <div style="display: flex; align-items: center; gap: 16px; margin-top: auto;">
+        <div style="width: 64px; height: 64px; border-radius: 50%; background: var(--bg-3); border: 1px solid var(--hairline); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+          <svg viewBox="0 0 24 24" width="34" height="34" aria-hidden="true">
+            <circle cx="12" cy="9" r="4" fill="rgba(244,240,232,0.55)"></circle>
+            <path d="M4 20 Q12 14 20 20 L20 22 L4 22 Z" fill="rgba(244,240,232,0.55)"></path>
+          </svg>
+        </div>
+        <div>
+          <div style="font-size: 22px; font-weight: 500; color: var(--ink); line-height: 1.2;">Dr. Axel Schell</div>
+          <div style="font-size: 20px; color: var(--ink-dim); line-height: 1.2;">Chief Technology Officer</div>
+        </div>
+      </div>
+      <div style="margin-top: 28px; padding-left: 16px; border-left: 2px solid var(--accent);">
+        <div style="font-family: var(--sans); font-size: 56px; font-weight: 500; color: var(--ink); line-height: 1; letter-spacing: -0.02em;">50K+</div>
+        <div style="font-size: 20px; color: var(--ink-dim); margin-top: 8px; line-height: 1.3;">empleados objetivo del rollout de Cowork.</div>
+      </div>
+    </div>
+
+    <div style="display: flex; flex-direction: column; padding: 36px 32px; background: var(--bg-2); border: 1px solid var(--hairline); border-radius: 14px;">
+      <div style="display: flex; align-items: center; gap: 14px; margin-bottom: 32px;">
+        <svg viewBox="0 0 32 32" width="24" height="24" aria-hidden="true">
+          <path d="M4 16 L18 6 L18 12 L26 12 L26 20 L18 20 L18 26 Z" fill="var(--accent)"></path>
+        </svg>
+        <span style="font-family: var(--sans); font-size: 32px; font-weight: 700; color: var(--ink); letter-spacing: -0.02em;">BNY</span>
+      </div>
+      <h3 class="serif-display" style="font-size: 38px; line-height: 1.1; color: var(--ink); margin: 0 0 36px;">Empleados digitales sobre Claude que operan cada proceso de punta a punta.</h3>
+      <div style="display: flex; align-items: center; gap: 16px; margin-top: auto;">
+        <div style="width: 64px; height: 64px; border-radius: 50%; background: var(--bg-3); border: 1px solid var(--hairline); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+          <svg viewBox="0 0 24 24" width="34" height="34" aria-hidden="true">
+            <circle cx="12" cy="9" r="4" fill="rgba(244,240,232,0.55)"></circle>
+            <path d="M4 20 Q12 14 20 20 L20 22 L4 22 Z" fill="rgba(244,240,232,0.55)"></path>
+          </svg>
+        </div>
+        <div>
+          <div style="font-size: 22px; font-weight: 500; color: var(--ink); line-height: 1.2;">Leigh-Ann Russell</div>
+          <div style="font-size: 20px; color: var(--ink-dim); line-height: 1.2;">CIO &amp; Global Head of Engineering</div>
+        </div>
+      </div>
+      <div style="margin-top: 28px; padding-left: 16px; border-left: 2px solid var(--accent);">
+        <div style="font-family: var(--sans); font-size: 56px; font-weight: 500; color: var(--ink); line-height: 1; letter-spacing: -0.02em;">220</div>
+        <div style="font-size: 20px; color: var(--ink-dim); margin-top: 8px; line-height: 1.3;">soluciones de IA en producción.</div>
+      </div>
+    </div>
+
+    <div style="display: flex; flex-direction: column; padding: 36px 32px; background: var(--bg-2); border: 1px solid var(--hairline); border-radius: 14px;">
+      <div style="display: flex; align-items: center; gap: 14px; margin-bottom: 32px;">
+        <span style="font-family: var(--serif); font-style: italic; font-size: 36px; font-weight: 500; color: var(--accent); letter-spacing: -0.02em; line-height: 1;">Moody's</span>
+      </div>
+      <h3 class="serif-display" style="font-size: 38px; line-height: 1.1; color: var(--ink); margin: 0 0 36px;">Productos agénticos sobre un siglo de inteligencia de crédito y cumplimiento.</h3>
+      <div style="display: flex; align-items: center; gap: 16px; margin-top: auto;">
+        <div style="width: 64px; height: 64px; border-radius: 50%; background: var(--bg-3); border: 1px solid var(--hairline); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+          <svg viewBox="0 0 24 24" width="34" height="34" aria-hidden="true">
+            <circle cx="12" cy="9" r="4" fill="rgba(244,240,232,0.55)"></circle>
+            <path d="M4 20 Q12 14 20 20 L20 22 L4 22 Z" fill="rgba(244,240,232,0.55)"></path>
+          </svg>
+        </div>
+        <div>
+          <div style="font-size: 22px; font-weight: 500; color: var(--ink); line-height: 1.2;">Rob Fauber</div>
+          <div style="font-size: 20px; color: var(--ink-dim); line-height: 1.2;">Chief Executive Officer</div>
+        </div>
+      </div>
+      <div style="margin-top: 28px; padding-left: 16px; border-left: 2px solid var(--accent);">
+        <div style="font-family: var(--sans); font-size: 52px; font-weight: 500; color: var(--ink); line-height: 1; letter-spacing: -0.02em;">40 hrs <span style="color: var(--accent);">→</span> 2 min</div>
+        <div style="font-size: 20px; color: var(--ink-dim); margin-top: 8px; line-height: 1.3;">Memo de crédito con agentes Moody's sobre Claude.</div>
+      </div>
+    </div>
+
+  </div>
+
+  <div style="display: flex; justify-content: space-between; align-items: baseline; padding-top: 16px; margin-top: 24px; border-top: 1px solid var(--hairline); font-family: var(--mono); font-size: 22px; letter-spacing: 0.06em; color: var(--ink-faint);">
+    <span style="text-transform: uppercase;">FUENTE: ANTHROPIC. (2026). ENTERPRISE CASE STUDIES</span>
+    <span></span>
+  </div>
+</section>
+
+<section data-label="17 Ecosistema de IA · Servicios financieros" style="padding: 0;">
+  <img src="assets/nvidia-robotics-ecosystem.png" alt="Ecosistema de robótica y agentes de IA mostrado en NVIDIA GTC" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 0;">
+
+  <!-- Gradient overlay for legibility -->
+  <div style="position: absolute; inset: 0; background: linear-gradient(180deg, rgba(11,14,22,0.65) 0%, rgba(11,14,22,0.05) 30%, rgba(11,14,22,0.05) 55%, rgba(11,14,22,0.95) 100%); z-index: 1;"></div>
+
+  <!-- Top eyebrow -->
+  <div style="position: absolute; top: 56px; left: var(--pad-x); right: var(--pad-x); z-index: 2; display: flex; justify-content: space-between; align-items: baseline;">
+    <span class="eyebrow" style="color: var(--accent);"><span style="color: rgb(255, 255, 255);">CASO DE USO · SERVICIOS FINANCIEROS</span></span>
+    <span class="eyebrow" style="color: var(--ink);"><br></span>
+  </div>
+
+  <!-- Bottom block -->
+  <div style="position: absolute; left: var(--pad-x); right: var(--pad-x); bottom: 88px; z-index: 2; display: grid; grid-template-columns: 1.4fr 1fr; gap: 64px; align-items: end;">
+    <div>
+      <h2 class="title" style="color: var(--ink); font-size: 76px; line-height: 0.98; margin: 0 0 20px;">La banca ya no compra software. <span class="serif-display" style="color: var(--accent);">Contrata agentes.</span></h2>
+      <p style="font-size: 28px; color: var(--ink); line-height: 1.35; margin: 0; max-width: 940px; opacity: 0.92;">Modelos, robots y agentes especializados se integran al stack financiero para operar suscripción, riesgo, cumplimiento y atención al cliente — auditables, gobernados y a costo unitario predecible.</p>
+    </div>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+      <div style="background: rgba(11,14,22,0.7); backdrop-filter: blur(8px); border: 1px solid rgba(244,240,232,0.2); border-radius: 12px; padding: 22px 24px;">
+        <div style="font-family: var(--sans); font-size: 56px; font-weight: 500; color: var(--ink); line-height: 1; letter-spacing: -0.02em;">30+</div>
+        <div style="font-family: var(--mono); font-size: 18px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent); margin-top: 10px;">Modelos y agentes integrables</div>
+      </div>
+      <div style="background: rgba(11,14,22,0.7); backdrop-filter: blur(8px); border: 1px solid rgba(244,240,232,0.2); border-radius: 12px; padding: 22px 24px;">
+        <div style="font-family: var(--sans); font-size: 56px; font-weight: 500; color: var(--ink); line-height: 1; letter-spacing: -0.02em;">1 API</div>
+        <div style="font-family: var(--mono); font-size: 18px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent); margin-top: 10px;">Orquestación común</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div style="position: absolute; left: var(--pad-x); right: var(--pad-x); bottom: 28px; z-index: 2; display: flex; justify-content: space-between; align-items: baseline; font-family: var(--mono); font-size: 20px; letter-spacing: 0.06em; color: rgba(244,240,232,0.5);">
+    <span style="text-transform: uppercase;">IMAGEN: NVIDIA GTC · ECOSISTEMA DE ROBÓTICA Y AGENTES</span>
+    <span></span>
+  </div>
+</section><section data-label="15 Sección Minería">
+  <div class="footer-row" style="top: 56px; bottom: auto;">
+    <span class="eyebrow"></span>
+    <span class="eyebrow"></span>
+  </div>
+
+  <div class="section-divider">
+    <div>
+      <h2 class="section-num">05</h2>
+    </div>
+    <div style="padding-bottom: 24px;">
+      <p class="eyebrow" style="margin-bottom: 24px;">MINERÍA</p>
+      <h3 class="section-name" style="margin-bottom: 40px;">Robótica para mantenimiento preventivo</h3>
+      <p class="section-blurb"></p>
+    </div>
+  </div>
+</section>
+
+
+
+<section data-label="18 Robótica minera · 2" style="padding: 0;">
+  <img src="assets/robot-mineria.png" alt="Robot cuadrúpedo Spot escaneando un túnel minero con LiDAR" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 0;">
+
+  <!-- Gradient overlay for legibility -->
+  <div style="position: absolute; inset: 0; background: linear-gradient(180deg, rgba(11,14,22,0.55) 0%, rgba(11,14,22,0.15) 35%, rgba(11,14,22,0.10) 65%, rgba(11,14,22,0.85) 100%); z-index: 1;"></div>
+
+  <!-- Top eyebrow -->
+  <div style="position: absolute; top: 56px; left: var(--pad-x); right: var(--pad-x); z-index: 2; display: flex; justify-content: space-between; align-items: baseline;">
+    <span class="eyebrow" style="color: rgb(255, 255, 255);">CASO DE USO · MINERÍA</span>
+    <span class="eyebrow" style="color: var(--ink);">
+</span>
+  </div>
+
+  <!-- Bottom block: title + description -->
+  <div style="position: absolute; left: var(--pad-x); right: var(--pad-x); bottom: 88px; z-index: 2; display: grid; grid-template-columns: 1.4fr 1fr; gap: 64px; align-items: end;">
+    <div>
+      <h2 class="title" style="color: var(--ink); font-size: 80px; line-height: 0.98; margin: 0 0 20px;">Robots cuadrúpedos para <span class="serif-display" style="color: var(--accent);">mantenimiento preventivo</span>.</h2>
+      <p style="font-size: 28px; color: var(--ink); line-height: 1.35; margin: 0; max-width: 920px; opacity: 0.92;">Sensores y modelos de visión sobre la marcha — el robot recorre el túnel, genera mapas tridimensionales en tiempo real y anticipa fallas antes de que el equipo crítico se detenga.</p>
+    </div>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+      <div style="background: rgba(11,14,22,0.7); backdrop-filter: blur(8px); border: 1px solid rgba(244,240,232,0.2); border-radius: 12px; padding: 22px 24px;">
+        <div style="font-family: var(--sans); font-size: 56px; font-weight: 500; color: var(--ink); line-height: 1; letter-spacing: -0.02em;">24/7</div>
+        <div style="font-family: var(--mono); font-size: 18px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent); margin-top: 10px;">Operación continua</div>
+      </div>
+      <div style="background: rgba(11,14,22,0.7); backdrop-filter: blur(8px); border: 1px solid rgba(244,240,232,0.2); border-radius: 12px; padding: 22px 24px;">
+        <div style="font-family: var(--sans); font-size: 56px; font-weight: 500; color: var(--ink); line-height: 1; letter-spacing: -0.02em;">0</div>
+        <div style="font-family: var(--mono); font-size: 18px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent); margin-top: 10px;">Riesgo humano</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer source -->
+  <div style="position: absolute; left: var(--pad-x); right: var(--pad-x); bottom: 28px; z-index: 2; display: flex; justify-content: space-between; align-items: baseline; font-family: var(--mono); font-size: 20px; letter-spacing: 0.06em; color: rgba(244,240,232,0.5);">
+    <span style="text-transform: uppercase;">IMAGEN: BOSTON DYNAMICS</span>
+    <span></span>
+  </div>
+</section><section data-label="18b Sección Agroexportación">
+  <div class="footer-row" style="top: 56px; bottom: auto;">
+    <span class="eyebrow"></span>
+    <span class="eyebrow"></span>
+  </div>
+
+  <div class="section-divider">
+    <div>
+      <h2 class="section-num">06</h2>
+    </div>
+    <div style="padding-bottom: 24px;">
+      <p class="eyebrow" style="margin-bottom: 24px;">AGROEXPORTACIÓN</p>
+      <h3 class="section-name" style="margin-bottom: 40px;">Del campo al contenedor, sin papel.</h3>
+      <p class="section-blurb" style=""><br></p>
+    </div>
+  </div>
+</section>
+
+
+
+
+
+
+
+
+
+<!-- ============================================================ -->
+<!-- 11 · FOUR LAYERS                                              -->
+<!-- ============================================================ -->
+
+
+<!-- ============================================================ -->
+<!-- 12 · SECTION DIVIDER · BANCA                                  -->
+<!-- ============================================================ -->
+
+
+<!-- ============================================================ -->
+<!-- 13 · BANCA · Use case matrix                                  -->
+<!-- ============================================================ -->
+
+
+<!-- ============================================================ -->
+<!-- 14 · BANCA · CASE STUDY                                       -->
+<!-- ============================================================ -->
+
+
+<!-- ============================================================ -->
+<!-- 15 · SECTION DIVIDER · MINERÍA                                -->
+<!-- ============================================================ -->
+
+
+<!-- ============================================================ -->
+<!-- 16 · MINERÍA · Use case matrix                                -->
+<!-- ============================================================ -->
+
+
+<!-- ============================================================ -->
+<!-- 17 · MINERÍA · CASE STUDY                                     -->
+<!-- ============================================================ -->
+
+
+<!-- ============================================================ -->
+<!-- 18 · SECTION DIVIDER · AGROEXPORTACIÓN                        -->
+<!-- ============================================================ -->
+
+
+<!-- ============================================================ -->
+<!-- 19 · AGRO · Use case matrix                                   -->
+<!-- ============================================================ -->
+
+
+<!-- ============================================================ -->
+<!-- 20 · AGRO · CASE STUDY                                        -->
+<!-- ============================================================ -->
+
+
+<!-- ============================================================ -->
+<!-- 21 · COMMON PATTERN                                           -->
+<!-- ============================================================ -->
+
+
+
+
+
+
+
+
+
+
+<section data-label="20 Puerto Chancay · Agroexportación" style="padding: 0;">
+  <img src="assets/puerto-chancay.jpg" alt="Buque portacontenedores COSCO Shipping arribando al megapuerto de Chancay" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 0;">
+
+  <!-- Gradient overlay for legibility -->
+  <div style="position: absolute; inset: 0; background: linear-gradient(180deg, rgba(11,14,22,0.55) 0%, rgba(11,14,22,0.10) 35%, rgba(11,14,22,0.10) 60%, rgba(11,14,22,0.92) 100%); z-index: 1;"></div>
+
+  <!-- Top eyebrow -->
+  <div style="position: absolute; top: 56px; left: var(--pad-x); right: var(--pad-x); z-index: 2; display: flex; justify-content: space-between; align-items: baseline;">
+    <span class="eyebrow" style="color: var(--accent);"><span style="color: rgb(255, 255, 255);">CASO DE USO · AGROEXPORTACIÓN</span></span>
+    <span class="eyebrow" style="color: var(--ink);"><br></span>
+  </div>
+
+  <!-- Bottom block -->
+  <div style="position: absolute; left: var(--pad-x); right: var(--pad-x); bottom: 88px; z-index: 2; display: grid; grid-template-columns: 1.4fr 1fr; gap: 64px; align-items: end;">
+    <div>
+      <h2 class="title" style="color: var(--ink); font-size: 78px; line-height: 0.98; margin: 0 0 20px;">Del campo al <span class="serif-display" style="color: var(--accent);">contenedor</span>, sin papel.</h2>
+      <p style="font-size: 28px; color: var(--ink); line-height: 1.35; margin: 0; max-width: 920px; opacity: 0.92;">Visión por computadora en línea de packing, optimización continua de la cadena de frío y trazabilidad digital del lote desde Chancay hasta la góndola del cliente final.</p>
+    </div>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+      <div style="background: rgba(11,14,22,0.7); backdrop-filter: blur(8px); border: 1px solid rgba(244,240,232,0.2); border-radius: 12px; padding: 22px 24px;">
+        <div style="font-family: var(--sans); font-size: 56px; font-weight: 500; color: var(--ink); line-height: 1; letter-spacing: -0.02em;">100%</div>
+        <div style="font-family: var(--mono); font-size: 18px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent); margin-top: 10px;">Cobertura de inspección</div>
+      </div>
+      <div style="background: rgba(11,14,22,0.7); backdrop-filter: blur(8px); border: 1px solid rgba(244,240,232,0.2); border-radius: 12px; padding: 22px 24px;">
+        <div style="font-family: var(--sans); font-size: 56px; font-weight: 500; color: var(--ink); line-height: 1; letter-spacing: -0.02em;">23 d</div>
+        <div style="font-family: var(--mono); font-size: 18px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent); margin-top: 10px;">Chancay → Shanghái</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div style="position: absolute; left: var(--pad-x); right: var(--pad-x); bottom: 28px; z-index: 2; display: flex; justify-content: space-between; align-items: baseline; font-family: var(--mono); font-size: 20px; letter-spacing: 0.06em; color: rgba(244,240,232,0.5);">
+    <span style="text-transform: uppercase;">PUERTO DE CHANCAY · COSCO SHIPPING</span>
+    <span></span>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- 22 · CALL TO ACTION                                           -->
+<!-- ============================================================ -->
+
+
+<!-- ============================================================ -->
+<!-- 23 · THANK YOU / CONTACT                                      -->
+<!-- ============================================================ -->
+<section data-label="23 Gracias" data-nostamp="">
+  <div class="footer-row" style="top: 56px; bottom: auto;">
+    <span class="mark">
+      <svg class="mark-svg" viewBox="-8 -8 80 80" aria-hidden="true" style="width: 100px; height: 100px">
+        <rect x="8" y="10" width="6" height="44" fill="#F4F0E8"></rect>
+        <path d="M14 10 H30 a18 22 0 0 1 0 44 H14 V46 H30 a10 14 0 0 0 0 -28 H14 Z" fill="#F4F0E8"></path>
+        <path d="M22 22 L32 42 L42 22 H37 L32 32 L27 22 Z" fill="#2D5BFF"></path>
+        <path d="M8 56 H56 V60 H8 Z" fill="#F4F0E8"></path>
+        <circle cx="56" cy="10" r="3" fill="#2D5BFF"></circle>
+      </svg>
+      <span class="mark-text" style=""><br></span>
+    </span>
+    <span class="eyebrow">
+</span>
+  </div>
+
+  <div class="thanks" style="grid-template-columns: 1.1fr 0.9fr; align-items: center;">
+    <div>
+      <h2 class="thanks-title">Gracias.<br><em style="color: var(--accent);">Conversemos.</em></h2>
+      <p style="font-family: var(--mono); font-size: 24px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-dim); margin: 40px 0 0;">Escanea para conectar en LinkedIn →</p>
+
+      <div class="contact-list" style="margin-top: 48px;">
+        <div class="contact-row">
+          <span class="lab">Email</span>
+          <span>x@dennisvivas.com</span>
+        </div>
+        <div class="contact-row">
+          <span class="lab">Sitio</span>
+          <span>dennisvivas.com</span>
+        </div>
+        <div class="contact-row">
+          <span class="lab">Hablemos de</span>
+          <span>IA empresarial sobre Claude · Anthropic</span>
+        </div>
+      </div>
+    </div>
+
+    <div style="display: flex; flex-direction: column; align-items: center;">
+      <div style="background: #F4F0E8; border-radius: 18px; padding: 32px 32px 24px; max-width: 440px; width: 100%; box-shadow: 0 20px 60px rgba(0,0,0,0.4);">
+        <img src="assets/linkedin-qr-dennis.jpg" alt="Código QR para conectar con Dennis Vivas en LinkedIn" style="width: 100%; height: auto; display: block; border-radius: 8px;">
+      </div>
+      <div style="margin-top: 24px; text-align: center;">
+        <div style="font-family: var(--sans); font-size: 28px; font-weight: 500; color: var(--ink); letter-spacing: -0.01em;">Dennis Vivas Zelada</div>
+        <div style="font-family: var(--mono); font-size: 18px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); margin-top: 8px;">linkedin.com/in/dennisvivas</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+</deck-stage>
+
+<script>
+  (async () => {
+    try { await document.fonts.ready; } catch(e) {}
+    setTimeout(() => window.print(), 700);
+  })();
+</script>
+
+</body></html>
