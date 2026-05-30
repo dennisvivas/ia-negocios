@@ -1,0 +1,1914 @@
+<!DOCTYPE html><html lang="es"><head>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<meta charset="utf-8">
+<title>Sistemas de IA aplicados a los negocios — Dennis Vivas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&amp;family=Instrument+Serif:ital@0;1&amp;family=JetBrains+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    /* Brand */
+    --ink: #F4F0E8;
+    --ink-dim: rgba(244, 240, 232, 0.62);
+    --ink-faint: rgba(244, 240, 232, 0.28);
+    --bg: #0B0E16;
+    --bg-2: #141826;
+    --bg-3: #1B2030;
+    --cream: #F4F0E8;
+    --cream-ink: #14171F;
+    --cream-ink-dim: rgba(20, 23, 31, 0.62);
+    --cream-ink-faint: rgba(20, 23, 31, 0.22);
+    --accent: #2D5BFF;
+    --accent-soft: #4F75FF;
+    --hairline: rgba(244, 240, 232, 0.12);
+    --hairline-dark: rgba(20, 23, 31, 0.12);
+
+    /* Type scale @ 1920x1080 */
+    --type-hero: 152px;
+    --type-display: 112px;
+    --type-title: 72px;
+    --type-subtitle: 48px;
+    --type-body: 32px;
+    --type-small: 26px;
+    --type-eyebrow: 22px;
+    --type-section-num: 280px;
+
+    /* Spacing */
+    --pad-top: 96px;
+    --pad-bottom: 96px;
+    --pad-x: 120px;
+    --gap-title: 56px;
+    --gap-item: 28px;
+
+    /* Type families */
+    --sans: "Geist", "Inter Tight", system-ui, sans-serif;
+    --serif: "Instrument Serif", "Times New Roman", serif;
+    --mono: "JetBrains Mono", ui-monospace, monospace;
+  }
+
+  html, body { margin: 0; padding: 0; background: #000; color: var(--ink); font-family: var(--sans); }
+
+  deck-stage { background: #000; }
+
+  /* Every slide */
+  section {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--sans);
+    padding: var(--pad-top) var(--pad-x) var(--pad-bottom);
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Brand isotype stamp on every slide */
+  section::before {
+    content: '';
+    position: absolute;
+    top: 36px;
+    right: 36px;
+    width: 40px;
+    height: 40px;
+    background-image: url('assets/mark-light.svg');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    z-index: 5;
+    pointer-events: none;
+    opacity: 0.95;
+  }
+  section.cream::before {
+    background-image: url('assets/mark-dark.svg');
+  }
+  section[data-nostamp]::before { display: none; }
+
+  /* --- Variants --- */
+  section.cream { background: var(--cream); color: var(--cream-ink); }
+  section.cream .ink-dim { color: var(--cream-ink-dim); }
+  section.cream .ink-faint { color: var(--cream-ink-faint); }
+  section.cream .hairline { border-color: var(--hairline-dark); }
+  section.cream .chip-mono { color: var(--cream-ink-dim); border-color: var(--hairline-dark); }
+
+  section.accent { background: var(--accent); color: var(--cream); }
+  section.accent .ink-dim { color: rgba(244, 240, 232, 0.72); }
+
+  /* --- Reusable bits --- */
+  .ink-dim { color: var(--ink-dim); }
+  .ink-faint { color: var(--ink-faint); }
+  .hairline { border-color: var(--hairline); }
+
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 24px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-dim);
+    font-weight: 500;
+  }
+  section.cream .eyebrow { color: var(--cream-ink-dim); }
+
+  .title {
+    font-family: var(--sans);
+    font-size: var(--type-title);
+    font-weight: 500;
+    letter-spacing: -0.025em;
+    line-height: 1.02;
+    margin: 0;
+    text-wrap: balance;
+  }
+  .subtitle {
+    font-family: var(--sans);
+    font-size: var(--type-subtitle);
+    font-weight: 400;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+    color: var(--ink-dim);
+    margin: 0;
+    text-wrap: pretty;
+  }
+  section.cream .subtitle { color: var(--cream-ink-dim); }
+
+  .body {
+    font-size: var(--type-body);
+    line-height: 1.35;
+    font-weight: 400;
+    letter-spacing: -0.005em;
+    margin: 0;
+    text-wrap: pretty;
+  }
+  .small {
+    font-size: var(--type-small);
+    line-height: 1.4;
+    margin: 0;
+  }
+  .serif-display {
+    font-family: var(--serif);
+    font-style: italic;
+    font-weight: 400;
+    letter-spacing: -0.01em;
+  }
+
+  .chip-mono {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 24px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 12px 22px;
+    border: 1px solid var(--hairline);
+    border-radius: 999px;
+    color: var(--ink-dim);
+  }
+
+  .footer-row {
+    position: absolute;
+    left: var(--pad-x);
+    right: var(--pad-x);
+    bottom: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-family: var(--mono);
+    font-size: 24px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+  }
+  section.cream .footer-row { color: var(--cream-ink-faint); }
+  .footer-row .left, .footer-row .right { display: flex; gap: 24px; align-items: center; }
+
+  /* Brand mark inline */
+  .mark { display: inline-flex; align-items: center; gap: 16px; }
+  .mark-svg { width: 44px; height: 44px; display: block; }
+  .mark-text {
+    font-family: var(--sans);
+    font-size: 24px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+
+  /* Hero / cover */
+  .cover-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    flex: 1;
+    align-items: end;
+    gap: 80px;
+  }
+  .cover-title {
+    font-family: var(--sans);
+    font-size: 120px;
+    font-weight: 500;
+    line-height: 0.96;
+    letter-spacing: -0.035em;
+    margin: 0;
+  }
+  .cover-title em {
+    font-family: var(--serif);
+    font-style: italic;
+    font-weight: 400;
+    letter-spacing: -0.02em;
+  }
+  .cover-meta { display: flex; flex-direction: column; gap: 16px; align-items: flex-end; text-align: right; }
+
+  /* Section divider */
+  .section-divider {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: end;
+    gap: 80px;
+  }
+  .section-num {
+    font-family: var(--sans);
+    font-size: var(--type-section-num);
+    line-height: 0.82;
+    font-weight: 500;
+    letter-spacing: -0.05em;
+    color: var(--accent);
+    margin: 0;
+  }
+  .section-name {
+    font-family: var(--sans);
+    font-size: 56px;
+    font-weight: 400;
+    line-height: 1.0;
+    letter-spacing: -0.02em;
+    margin: 0;
+  }
+  .section-blurb {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 38px;
+    line-height: 1.25;
+    color: var(--ink-dim);
+    max-width: 720px;
+    margin: 0;
+  }
+
+  /* Three columns */
+  .three-col {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 48px;
+    margin-top: var(--gap-title);
+    flex: 1;
+    align-content: start;
+  }
+  .col-card {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    padding-top: 32px;
+    border-top: 1px solid var(--hairline);
+  }
+  section.cream .col-card { border-top-color: var(--hairline-dark); }
+  .col-num {
+    font-family: var(--mono);
+    font-size: 24px;
+    letter-spacing: 0.12em;
+    color: var(--accent);
+  }
+  .col-title {
+    font-size: 38px;
+    font-weight: 500;
+    line-height: 1.1;
+    letter-spacing: -0.015em;
+    margin: 0;
+  }
+  .col-body {
+    font-size: 26px;
+    line-height: 1.4;
+    color: var(--ink-dim);
+    margin: 0;
+  }
+  section.cream .col-body { color: var(--cream-ink-dim); }
+
+  /* Big number */
+  .big-stat {
+    font-family: var(--sans);
+    font-size: 260px;
+    font-weight: 500;
+    line-height: 0.86;
+    letter-spacing: -0.05em;
+    margin: 0;
+  }
+  .big-stat-unit {
+    font-family: var(--mono);
+    font-size: 28px;
+    letter-spacing: 0.08em;
+    color: var(--ink-dim);
+    margin-top: 32px;
+    max-width: 540px;
+  }
+
+  /* Layered placeholder image */
+  .placeholder {
+    background:
+      repeating-linear-gradient(135deg, rgba(244,240,232,0.06) 0 12px, transparent 12px 24px),
+      var(--bg-2);
+    border: 1px solid var(--hairline);
+    display: flex;
+    align-items: flex-end;
+    padding: 28px;
+    font-family: var(--mono);
+    font-size: 24px;
+    letter-spacing: 0.06em;
+    color: var(--ink-dim);
+    text-transform: uppercase;
+  }
+  section.cream .placeholder {
+    background:
+      repeating-linear-gradient(135deg, rgba(20,23,31,0.06) 0 12px, transparent 12px 24px),
+      rgba(20,23,31,0.04);
+    border-color: var(--hairline-dark);
+    color: var(--cream-ink-dim);
+  }
+  .placeholder.tall { aspect-ratio: 3/4; }
+
+  /* Table */
+  .data-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: var(--gap-title);
+    font-size: 28px;
+  }
+  .data-table th, .data-table td {
+    text-align: left;
+    padding: 24px 24px;
+    border-bottom: 1px solid var(--hairline);
+    vertical-align: top;
+  }
+  .data-table th {
+    font-family: var(--mono);
+    font-size: 24px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    font-weight: 500;
+    border-bottom: 1px solid var(--hairline);
+  }
+  .data-table td.bold { font-weight: 500; }
+  .data-table td.dim { color: var(--ink-dim); }
+  .data-table td .pct { color: var(--accent); font-family: var(--mono); }
+  section.cream .data-table th, section.cream .data-table td {
+    border-bottom-color: var(--hairline-dark);
+  }
+  section.cream .data-table th { color: var(--cream-ink-faint); }
+  section.cream .data-table td.dim { color: var(--cream-ink-dim); }
+
+  /* Quote slide */
+  .quote {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 96px;
+    line-height: 1.05;
+    letter-spacing: -0.015em;
+    margin: 0;
+    max-width: 1500px;
+  }
+  .quote em { font-style: italic; }
+
+  /* Header bar at top of body slides */
+  .slide-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: var(--gap-title);
+    padding-bottom: 28px;
+    border-bottom: 1px solid var(--hairline);
+  }
+  section.cream .slide-head { border-bottom-color: var(--hairline-dark); }
+  .slide-head .title { max-width: 1200px; }
+  .slide-head-right {
+    font-family: var(--mono);
+    font-size: 24px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    white-space: nowrap;
+  }
+  section.cream .slide-head-right { color: var(--cream-ink-faint); }
+
+  /* Pattern row (use case grid) */
+  .matrix {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr 1fr 1fr;
+    gap: 0;
+    margin-top: var(--gap-title);
+    border-top: 1px solid var(--hairline);
+  }
+  section.cream .matrix { border-top-color: var(--hairline-dark); }
+  .matrix > div {
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--hairline);
+    font-size: 24px;
+    line-height: 1.3;
+  }
+  section.cream .matrix > div { border-bottom-color: var(--hairline-dark); }
+  .matrix .h {
+    font-family: var(--mono);
+    font-size: 24px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    border-bottom: 1px solid var(--hairline);
+  }
+  section.cream .matrix .h { color: var(--cream-ink-faint); border-bottom-color: var(--hairline-dark); }
+  .matrix .row-label { font-weight: 500; }
+  .matrix .dim { color: var(--ink-dim); }
+  section.cream .matrix .dim { color: var(--cream-ink-dim); }
+
+  /* Speaker bio layout */
+  .bio-grid {
+    display: grid;
+    grid-template-columns: 480px 1fr;
+    gap: 96px;
+    flex: 1;
+    align-items: start;
+  }
+  .bio-photo {
+    aspect-ratio: 3/4;
+    background:
+      repeating-linear-gradient(135deg, rgba(244,240,232,0.06) 0 12px, transparent 12px 24px),
+      var(--bg-2);
+    border: 1px solid var(--hairline);
+    display: flex;
+    align-items: flex-end;
+    padding: 24px;
+    font-family: var(--mono);
+    font-size: 24px;
+    letter-spacing: 0.06em;
+    color: var(--ink-dim);
+    text-transform: uppercase;
+  }
+  .bio-credentials {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px 48px;
+    margin-top: 48px;
+    padding-top: 32px;
+    border-top: 1px solid var(--hairline);
+  }
+  .cred-label {
+    font-family: var(--mono);
+    font-size: 18px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    padding-top: 12px;
+  }
+  .cred-value {
+    font-size: 26px;
+    line-height: 1.3;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--hairline);
+  }
+  .cred-label + .cred-value { padding-bottom: 12px; }
+  .bio-credentials > div { padding: 12px 0; border-bottom: 1px solid var(--hairline); }
+  .bio-credentials .label {
+    font-family: var(--mono);
+    font-size: 24px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: 8px;
+  }
+  .bio-credentials .value { font-size: 26px; line-height: 1.3; }
+
+  /* Two-col layout */
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    flex: 1;
+    align-items: start;
+  }
+
+  /* Stat strip */
+  .stat-strip {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    margin-top: var(--gap-title);
+    border-top: 1px solid var(--hairline);
+    border-bottom: 1px solid var(--hairline);
+  }
+  section.cream .stat-strip { border-color: var(--hairline-dark); }
+  .stat-cell { padding: 40px 32px 40px 0; border-right: 1px solid var(--hairline); }
+  section.cream .stat-cell { border-right-color: var(--hairline-dark); }
+  .stat-cell:last-child { border-right: none; }
+  .stat-cell .num {
+    font-family: var(--sans);
+    font-size: 96px;
+    line-height: 1;
+    font-weight: 500;
+    letter-spacing: -0.04em;
+    color: var(--accent);
+  }
+  .stat-cell .lab {
+    font-size: 24px;
+    line-height: 1.35;
+    color: var(--ink-dim);
+    margin-top: 16px;
+  }
+  section.cream .stat-cell .lab { color: var(--cream-ink-dim); }
+
+  /* Layer stack (4 capas) */
+  .layers { display: flex; flex-direction: column; gap: 16px; margin-top: var(--gap-title); }
+  .layer {
+    display: grid;
+    grid-template-columns: 80px 1fr 1.2fr;
+    gap: 48px;
+    align-items: baseline;
+    padding: 28px 0;
+    border-top: 1px solid var(--hairline);
+  }
+  .layer:last-child { border-bottom: 1px solid var(--hairline); }
+  .layer-num {
+    font-family: var(--mono);
+    font-size: 24px;
+    color: var(--accent);
+    padding-top: 12px;
+  }
+  .layer-name {
+    font-size: 44px;
+    font-weight: 500;
+    letter-spacing: -0.015em;
+  }
+  .layer-desc {
+    font-size: 26px;
+    line-height: 1.35;
+    color: var(--ink-dim);
+  }
+
+  /* CTA slide */
+  .cta-grid {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 80px;
+    flex: 1;
+    align-items: end;
+  }
+  .cta-actions { display: flex; flex-direction: column; gap: 32px; }
+  .cta-action {
+    display: grid;
+    grid-template-columns: 60px 1fr;
+    gap: 32px;
+    padding: 28px 0;
+    border-top: 1px solid rgba(244,240,232,0.2);
+    align-items: baseline;
+  }
+  section.accent .cta-action { border-top-color: rgba(244,240,232,0.25); }
+  .cta-action:last-child { border-bottom: 1px solid rgba(244,240,232,0.2); }
+  section.accent .cta-action:last-child { border-bottom-color: rgba(244,240,232,0.25); }
+  .cta-num {
+    font-family: var(--mono);
+    font-size: 26px;
+    letter-spacing: 0.1em;
+  }
+  .cta-text {
+    font-size: 36px;
+    line-height: 1.2;
+    font-weight: 500;
+    letter-spacing: -0.015em;
+  }
+
+  /* Thank you slide */
+  .thanks {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: end;
+  }
+  .thanks-title {
+    font-family: var(--sans);
+    font-size: 200px;
+    font-weight: 500;
+    letter-spacing: -0.04em;
+    line-height: 0.9;
+    margin: 0;
+  }
+  .thanks-title em {
+    font-family: var(--serif);
+    font-style: italic;
+    font-weight: 400;
+  }
+  .contact-list { display: flex; flex-direction: column; gap: 16px; }
+  .contact-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 20px 0;
+    border-top: 1px solid var(--hairline);
+    font-size: 28px;
+  }
+  .contact-row:last-child { border-bottom: 1px solid var(--hairline); }
+  .contact-row .lab {
+    font-family: var(--mono);
+    font-size: 24px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+  }
+
+  /* Big number sectors */
+  .sector-hero {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    gap: 80px;
+    align-items: end;
+  }
+  .sector-hero .placeholder { height: 420px; align-self: stretch; }
+
+  /* Forces three-col with serif */
+  .force-card {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+    padding: 40px 0 0;
+    border-top: 1px solid var(--hairline);
+  }
+  section.cream .force-card { border-top-color: var(--hairline-dark); }
+  .force-glyph {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 88px;
+    line-height: 1;
+    color: var(--accent);
+  }
+  .force-title {
+    font-size: 40px;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+    margin: 0;
+  }
+  .force-body {
+    font-size: 25px;
+    line-height: 1.4;
+    color: var(--ink-dim);
+    margin: 0;
+  }
+  section.cream .force-body { color: var(--cream-ink-dim); }
+</style>
+
+<!-- Speaker notes intentionally omitted (user did not request them) -->
+</head>
+<body style="">
+
+<script src="deck-stage.js"></script>
+
+<deck-stage width="1920" height="1080" style="--deck-rail-w: 188px;" data-om-id="00055a4b:7" data-cc-id="cc-3">
+
+<!-- ============================================================ -->
+<!-- 01 · COVER                                                    -->
+<!-- ============================================================ -->
+<section data-label="01 Portada" data-nostamp="" data-om-id="00055a4b:8" data-screen-label="01 01 Portada" data-om-validate="no_overflowing_text,no_overlapping_text,slide_sized_text" data-deck-slide="0">
+  <div class="footer-row" style="top: 56px; bottom: auto;" data-om-id="00055a4b:9">
+    <div class="left" data-om-id="00055a4b:10">
+      <span class="mark" data-om-id="00055a4b:11">
+        <svg class="mark-svg" viewBox="-8 -8 80 80" aria-hidden="true" style="width: 100px; height: 100px;" data-om-id="00055a4b:12">
+          <rect x="8" y="10" width="6" height="44" fill="#F4F0E8" data-om-id="00055a4b:13"></rect>
+          <path d="M14 10 H30 a18 22 0 0 1 0 44 H14 V46 H30 a10 14 0 0 0 0 -28 H14 Z" fill="#F4F0E8" data-om-id="00055a4b:14"></path>
+          <path d="M22 22 L32 42 L42 22 H37 L32 32 L27 22 Z" fill="#2D5BFF" data-om-id="00055a4b:15"></path>
+          <path d="M8 56 H56 V60 H8 Z" fill="#F4F0E8" data-om-id="00055a4b:16"></path>
+          <circle cx="56" cy="10" r="3" fill="#2D5BFF" data-om-id="00055a4b:17"></circle>
+        </svg>
+        <span class="mark-text" style="" data-om-id="00055a4b:18"><br data-om-id="00055a4b:19"></span>
+      </span>
+    </div>
+    <div class="right" data-om-id="00055a4b:20">
+      <span data-om-id="00055a4b:21">Keynote · 2026</span>
+    </div>
+  </div>
+
+  <div class="cover-grid" data-om-id="00055a4b:22">
+    <div data-om-id="00055a4b:23">
+      <div class="chip-mono" style="margin-bottom: 64px;" data-om-id="00055a4b:24"></div>
+      <h1 class="cover-title" data-om-id="00055a4b:25">Sistemas de <em data-om-id="00055a4b:26">inteligencia artificial</em> aplicados a los negocios.</h1>
+    </div>
+    <div class="cover-meta" data-om-id="00055a4b:27">
+      <span class="eyebrow" data-om-id="00055a4b:28">El nuevo motor para</span>
+      <span class="subtitle" style="font-size: 44px; color: var(--ink); max-width: 540px;" data-om-id="00055a4b:29">la banca,<br data-om-id="00055a4b:30">la minería<br data-om-id="00055a4b:31">y la agroexportación.</span>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- 02 · SPEAKER                                                  -->
+<!-- ============================================================ -->
+<section data-label="02 Ponente" data-om-id="00055a4b:32" data-screen-label="02 02 Ponente" data-om-validate="no_overflowing_text,no_overlapping_text,slide_sized_text" data-deck-slide="1">
+  <div class="slide-head" data-om-id="00055a4b:33">
+    <h2 class="title" style="" data-om-id="00055a4b:34">Dennis Vivas Zelada</h2>
+    <div class="slide-head-right" style="" data-om-id="00055a4b:35"><br data-om-id="00055a4b:36"></div>
+  </div>
+
+  <div class="bio-grid" data-om-id="00055a4b:37">
+    <div class="bio-photo" style="background: #14171F; padding: 0; overflow: hidden;" data-om-id="00055a4b:38">
+      <img src="assets/dennis-portrait.jpg" alt="Dennis Vivas" style="width: 100%; height: 100%; object-fit: cover; object-position: center top; display: block; filter: contrast(1.02);" data-om-id="00055a4b:39">
+    </div>
+    <div data-om-id="00055a4b:40">
+      <p class="body" style="font-size: 30px; line-height: 1.45; color: var(--ink); max-width: 900px;" data-om-id="00055a4b:41">Empresario e ingeniero de producto especializado en el diseño y despliegue de sistemas de inteligencia artificial de grado empresarial sobre Claude, Anthropic para clientes en banca, minería y agroexportación.</p>
+
+      <div class="bio-credentials" data-om-id="00055a4b:42">
+        <div data-om-id="00055a4b:43">
+          <div class="label" data-om-id="00055a4b:44">Formación</div>
+          <div class="value" style="" data-om-id="00055a4b:45">Universidad de Deusto · España</div>
+        </div>
+        <div data-om-id="00055a4b:46">
+          <div class="label" data-om-id="00055a4b:47">Trayectoria</div>
+          <div class="value" data-om-id="00055a4b:48">10+ años emprendiendo en tecnología</div>
+        </div>
+        <div data-om-id="00055a4b:49">
+          <div class="label" data-om-id="00055a4b:50">Liderazgo gremial</div>
+          <div class="value" data-om-id="00055a4b:51">Fundador, Asociación Fintech del Perú</div>
+        </div>
+        <div data-om-id="00055a4b:52">
+          <div class="label" data-om-id="00055a4b:53">Consultoría</div>
+          <div class="value" style="" data-om-id="00055a4b:54">Negocios digitales, Innovación, Fintech</div>
+        </div>
+        <div data-om-id="00055a4b:55">
+          <div class="label" data-om-id="00055a4b:56">Docencia</div>
+          <div class="value" data-om-id="00055a4b:57">Universidad de Santiago de Chile</div>
+        </div>
+        <div data-om-id="00055a4b:58">
+          <div class="label" data-om-id="00055a4b:59">Posgrado</div>
+          <div class="value" style="" data-om-id="00055a4b:60">Candidato a MSc Computer Science · Universidad Adolfo Ibañez (Chile)</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer-row" data-om-id="00055a4b:61">
+    <span style="" data-om-id="00055a4b:62"><br data-om-id="00055a4b:63"></span>
+    <span style="" data-om-id="00055a4b:64"><br data-om-id="00055a4b:65"></span>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- 03 · AGENDA / ÍNDICE                                          -->
+<!-- ============================================================ -->
+<section data-label="03 Índice" data-om-id="00055a4b:66" data-screen-label="03 03 Índice" data-om-validate="no_overflowing_text,no_overlapping_text,slide_sized_text" data-deck-slide="2">
+  <div class="slide-head" data-om-id="00055a4b:67">
+    <h2 class="title" data-om-id="00055a4b:68">Índice.</h2>
+    <div class="slide-head-right" data-om-id="00055a4b:69">
+</div>
+  </div>
+
+  <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 0 96px; flex: 1; align-content: start;" data-om-id="00055a4b:70">
+
+    <a style="display: grid; grid-template-columns: 80px 1fr auto; gap: 32px; align-items: baseline; padding: 32px 0; border-top: 1px solid var(--hairline); text-decoration: none; color: inherit;" data-om-id="00055a4b:71">
+      <span style="font-family: var(--mono); font-size: 24px; letter-spacing: 0.12em; color: var(--accent);" data-om-id="00055a4b:72">01</span>
+      <span data-om-id="00055a4b:73">
+        <span style="display: block; font-size: 44px; font-weight: 500; letter-spacing: -0.02em; line-height: 1.1;" data-om-id="00055a4b:74">Contexto</span>
+        <span style="display: block; font-size: 24px; line-height: 1.4; color: var(--ink-dim); margin-top: 10px;" data-om-id="00055a4b:75">
+</span>
+      </span>
+      <span data-om-id="00055a4b:76"></span>
+    </a>
+
+    <a style="display: grid; grid-template-columns: 80px 1fr auto; gap: 32px; align-items: baseline; padding: 32px 0; border-top: 1px solid var(--hairline); text-decoration: none; color: inherit;" data-om-id="00055a4b:77">
+      <span style="font-family: var(--mono); font-size: 24px; letter-spacing: 0.12em; color: var(--accent);" data-om-id="00055a4b:78">02</span>
+      <span data-om-id="00055a4b:79">
+        <span style="display: block; font-size: 44px; font-weight: 500; letter-spacing: -0.02em; line-height: 1.1;" data-om-id="00055a4b:80">Casos de éxito en el mundo</span>
+        <span style="display: block; font-size: 24px; line-height: 1.4; color: var(--ink-dim); margin-top: 10px;" data-om-id="00055a4b:81">
+</span>
+      </span>
+      <span data-om-id="00055a4b:82"></span>
+    </a>
+
+    <a style="display: grid; grid-template-columns: 80px 1fr auto; gap: 32px; align-items: baseline; padding: 32px 0; border-top: 1px solid var(--hairline); text-decoration: none; color: inherit;" data-om-id="00055a4b:83">
+      <span style="font-family: var(--mono); font-size: 24px; letter-spacing: 0.12em; color: var(--accent);" data-om-id="00055a4b:84">03</span>
+      <span data-om-id="00055a4b:85">
+        <span style="display: block; font-size: 44px; font-weight: 500; letter-spacing: -0.02em; line-height: 1.1;" data-om-id="00055a4b:86">Avances en el Perú</span>
+        <span style="display: block; font-size: 24px; line-height: 1.4; color: var(--ink-dim); margin-top: 10px;" data-om-id="00055a4b:87">
+</span>
+      </span>
+      <span data-om-id="00055a4b:88"></span>
+    </a>
+
+    <a style="display: grid; grid-template-columns: 80px 1fr auto; gap: 32px; align-items: baseline; padding: 32px 0; border-top: 1px solid var(--hairline); text-decoration: none; color: inherit;" data-om-id="00055a4b:89">
+      <span style="font-family: var(--mono); font-size: 24px; letter-spacing: 0.12em; color: var(--accent);" data-om-id="00055a4b:90">04<span style="color: var(--ink-faint);" data-om-id="00055a4b:91"></span></span>
+      <span data-om-id="00055a4b:92">
+        <span style="display: block; font-size: 44px; font-weight: 500; letter-spacing: -0.02em; line-height: 1.1;" data-om-id="00055a4b:93">Aplicaciones para la Banca</span>
+        <span style="display: block; font-size: 24px; line-height: 1.4; color: var(--ink-dim); margin-top: 10px;" data-om-id="00055a4b:94">
+</span>
+      </span>
+      <span data-om-id="00055a4b:95"></span>
+    </a>
+
+    <a style="display: grid; grid-template-columns: 80px 1fr auto; gap: 32px; align-items: baseline; padding: 32px 0; border-top: 1px solid var(--hairline); text-decoration: none; color: inherit;" data-om-id="00055a4b:96">
+      <span style="font-family: var(--mono); font-size: 24px; letter-spacing: 0.12em; color: var(--accent);" data-om-id="00055a4b:97">05<span style="color: var(--ink-faint);" data-om-id="00055a4b:98"></span></span>
+      <span data-om-id="00055a4b:99">
+        <span style="display: block; font-size: 44px; font-weight: 500; letter-spacing: -0.02em; line-height: 1.1;" data-om-id="00055a4b:100">Aplicaciones para la Minería</span>
+        <span style="display: block; font-size: 24px; line-height: 1.4; color: var(--ink-dim); margin-top: 10px;" data-om-id="00055a4b:101">
+</span>
+      </span>
+      <span data-om-id="00055a4b:102"></span>
+    </a>
+
+    <a style="display: grid; grid-template-columns: 80px 1fr auto; gap: 32px; align-items: baseline; padding: 32px 0; border-top: 1px solid var(--hairline); border-bottom: 1px solid var(--hairline); text-decoration: none; color: inherit;" data-om-id="00055a4b:103">
+      <span style="font-family: var(--mono); font-size: 24px; letter-spacing: 0.12em; color: var(--accent);" data-om-id="00055a4b:104">06<span style="color: var(--ink-faint);" data-om-id="00055a4b:105"></span></span>
+      <span data-om-id="00055a4b:106">
+        <span style="display: block; font-size: 44px; font-weight: 500; letter-spacing: -0.02em; line-height: 1.1;" data-om-id="00055a4b:107">Aplicaciones para la Agroexportación</span>
+        <span style="display: block; font-size: 24px; line-height: 1.4; color: var(--ink-dim); margin-top: 10px;" data-om-id="00055a4b:108">
+</span>
+      </span>
+      <span data-om-id="00055a4b:109"></span>
+    </a>
+
+  </div>
+
+  <div class="footer-row" data-om-id="00055a4b:110">
+    <span data-om-id="00055a4b:111"></span>
+    <span data-om-id="00055a4b:112"></span>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- 04 · THE THESIS (editorial cream slide)                       -->
+<!-- ============================================================ -->
+<section data-label="04 Sección Problema" data-om-id="00055a4b:113" data-screen-label="04 04 Sección Problema" data-om-validate="no_overflowing_text,no_overlapping_text,slide_sized_text" data-deck-slide="3">
+  <div class="footer-row" style="top: 56px; bottom: auto;" data-om-id="00055a4b:114">
+    <span class="eyebrow" style="" data-om-id="00055a4b:115"><br data-om-id="00055a4b:116"></span>
+    <span class="eyebrow" style="" data-om-id="00055a4b:117"><br data-om-id="00055a4b:118"></span>
+  </div>
+
+  <div class="section-divider" data-om-id="00055a4b:119">
+    <div data-om-id="00055a4b:120">
+      <h2 class="section-num" data-om-id="00055a4b:121">01</h2>
+    </div>
+    <div style="padding-bottom: 24px;" data-om-id="00055a4b:122">
+      <p class="eyebrow" style="margin-bottom: 24px;" data-om-id="00055a4b:123">CONTEXTO</p>
+      <h3 class="section-name" style="margin-bottom: 40px;" data-om-id="00055a4b:124">El estado del arte de la inteligencia artificial</h3>
+      <p class="section-blurb" data-om-id="00055a4b:125">
+</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- 04 · SECTION DIVIDER · PROBLEMA                               -->
+<!-- ============================================================ -->
+
+
+<!-- ============================================================ -->
+<!-- 05 · UNPREPARED — full-bleed editorial                        -->
+<!-- ============================================================ -->
+<section data-label="05 No estamos preparados" data-om-id="00055a4b:126" data-screen-label="05 05 No estamos preparados" data-om-validate="no_overflowing_text,no_overlapping_text,slide_sized_text" data-deck-slide="4">
+  <div class="slide-head" style="margin-bottom: 32px;" data-om-id="00055a4b:127">
+    <h2 class="title" style="color: var(--ink); font-size: 56px; line-height: 1.1;" data-om-id="00055a4b:128">Inteligencia de modelos de lenguaje <span class="serif-display" style="color: var(--accent);" data-om-id="00055a4b:129">de frontera</span> a lo largo del tiempo.</h2>
+    <div class="slide-head-right" style="color: var(--accent);" data-om-id="00055a4b:130"></div>
+  </div>
+
+  <div style="flex: 1; display: flex; align-items: center; justify-content: center; padding: 16px 0;" data-om-id="00055a4b:131">
+    <img src="assets/frontier-llm-intelligence.png" alt="Inteligencia de modelos de lenguaje de frontera a lo largo del tiempo" style="max-width: 100%; max-height: 100%; width: auto; height: auto; display: block; object-fit: contain;" data-om-id="00055a4b:132">
+  </div>
+
+  <div style="display: flex; justify-content: space-between; align-items: baseline; padding-top: 20px; border-top: 1px solid var(--hairline); font-family: var(--mono); font-size: 22px; letter-spacing: 0.06em; color: var(--ink-faint);" data-om-id="00055a4b:133">
+    <span style="text-transform: uppercase;" data-om-id="00055a4b:134">FUENTE: ARTIFICIAL ANALYSIS. (2026)</span>
+    <a href="https://artificialanalysis.ai/" target="_blank" rel="noopener" style="color: var(--accent); text-decoration: none; letter-spacing: 0;" data-om-id="00055a4b:135"></a>
+  </div>
+</section><section data-label="07 Leyes de escalado" data-om-id="00055a4b:136" data-screen-label="06 07 Leyes de escalado" data-om-validate="no_overflowing_text,no_overlapping_text,slide_sized_text" data-deck-slide="5">
+  <div class="slide-head" style="margin-bottom: 24px;" data-om-id="00055a4b:137">
+    <h2 class="title" style="color: var(--ink);" data-om-id="00055a4b:138">Las leyes de <span class="serif-display" style="color: var(--accent);" data-om-id="00055a4b:139">escalado</span> son reales.</h2>
+    <div class="slide-head-right" style="color: var(--accent);" data-om-id="00055a4b:140"></div>
+  </div>
+
+  <div style="flex: 1; position: relative; padding: 8px 0;" data-om-id="00055a4b:141">
+    <svg viewBox="0 0 1680 760" xmlns="http://www.w3.org/2000/svg" style="position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible;" aria-hidden="true" data-om-id="00055a4b:142">
+      <text x="40" y="400" font-family="JetBrains Mono, ui-monospace, monospace" font-size="22" letter-spacing="0.1em" fill="rgba(244,240,232,0.62)" text-anchor="middle" transform="rotate(-90 40 400)" data-om-id="00055a4b:143">LO QUE EL MODELO PUEDE HACER</text>
+
+      <line x1="320" y1="120" x2="1620" y2="120" stroke="rgba(244,240,232,0.10)" stroke-width="1" data-om-id="00055a4b:144"></line>
+      <line x1="320" y1="220" x2="1620" y2="220" stroke="rgba(244,240,232,0.10)" stroke-width="1" data-om-id="00055a4b:145"></line>
+      <line x1="320" y1="320" x2="1620" y2="320" stroke="rgba(244,240,232,0.10)" stroke-width="1" data-om-id="00055a4b:146"></line>
+      <line x1="320" y1="420" x2="1620" y2="420" stroke="rgba(244,240,232,0.10)" stroke-width="1" data-om-id="00055a4b:147"></line>
+      <line x1="320" y1="520" x2="1620" y2="520" stroke="rgba(244,240,232,0.10)" stroke-width="1" data-om-id="00055a4b:148"></line>
+      <line x1="320" y1="620" x2="1620" y2="620" stroke="rgba(244,240,232,0.10)" stroke-width="1" data-om-id="00055a4b:149"></line>
+
+      <g font-family="Geist, sans-serif" font-size="24" fill="#F4F0E8" data-om-id="00055a4b:150">
+        <text x="300" y="113" text-anchor="end" data-om-id="00055a4b:151"><tspan x="300" data-om-id="00055a4b:152">Genera resultados</tspan><tspan x="300" dy="28" data-om-id="00055a4b:153">de punta a punta</tspan></text>
+        <text x="300" y="227" text-anchor="end" data-om-id="00055a4b:154">Aporta criterio</text>
+        <text x="300" y="313" text-anchor="end" data-om-id="00055a4b:155"><tspan x="300" data-om-id="00055a4b:156">Es dueño de</tspan><tspan x="300" dy="28" data-om-id="00055a4b:157">tareas definidas</tspan></text>
+        <text x="300" y="413" text-anchor="end" data-om-id="00055a4b:158"><tspan x="300" data-om-id="00055a4b:159">Hace el trabajo</tspan><tspan x="300" dy="28" data-om-id="00055a4b:160">de primera revisión</tspan></text>
+        <text x="300" y="513" text-anchor="end" data-om-id="00055a4b:161"><tspan x="300" data-om-id="00055a4b:162">Resume</tspan><tspan x="300" dy="28" data-om-id="00055a4b:163">y redacta borradores</tspan></text>
+        <text x="300" y="627" text-anchor="end" data-om-id="00055a4b:164">Responde preguntas</text>
+      </g>
+
+      <path d="M 550 620 C 660 600, 720 555, 750 525 C 790 510, 815 508, 825 505 C 950 485, 1060 450, 1100 415 C 1160 360, 1190 335, 1200 320 C 1240 290, 1270 250, 1275 240 C 1310 215, 1322 200, 1325 195 C 1355 180, 1372 172, 1375 170 C 1400 150, 1420 130, 1430 120" fill="none" stroke="#F4F0E8" stroke-width="3" stroke-linecap="round" data-om-id="00055a4b:165"></path>
+
+      <line x1="550" y1="630" x2="550" y2="680" stroke="rgba(244,240,232,0.22)" stroke-width="1" stroke-dasharray="2 6" data-om-id="00055a4b:166"></line>
+      <line x1="750" y1="535" x2="750" y2="680" stroke="rgba(244,240,232,0.22)" stroke-width="1" stroke-dasharray="2 6" data-om-id="00055a4b:167"></line>
+      <line x1="825" y1="515" x2="825" y2="680" stroke="rgba(244,240,232,0.22)" stroke-width="1" stroke-dasharray="2 6" data-om-id="00055a4b:168"></line>
+      <line x1="1100" y1="425" x2="1100" y2="680" stroke="rgba(244,240,232,0.22)" stroke-width="1" stroke-dasharray="2 6" data-om-id="00055a4b:169"></line>
+      <line x1="1200" y1="330" x2="1200" y2="680" stroke="rgba(244,240,232,0.22)" stroke-width="1" stroke-dasharray="2 6" data-om-id="00055a4b:170"></line>
+      <line x1="1275" y1="250" x2="1275" y2="680" stroke="rgba(244,240,232,0.22)" stroke-width="1" stroke-dasharray="2 6" data-om-id="00055a4b:171"></line>
+      <line x1="1325" y1="205" x2="1325" y2="680" stroke="rgba(244,240,232,0.22)" stroke-width="1" stroke-dasharray="2 6" data-om-id="00055a4b:172"></line>
+      <line x1="1430" y1="130" x2="1430" y2="680" stroke="rgba(244,240,232,0.22)" stroke-width="1" stroke-dasharray="2 6" data-om-id="00055a4b:173"></line>
+
+      <circle cx="550" cy="620" r="9" fill="#0B0E16" stroke="#2D5BFF" stroke-width="2.5" data-om-id="00055a4b:174"></circle>
+      <circle cx="750" cy="525" r="9" fill="#0B0E16" stroke="#2D5BFF" stroke-width="2.5" data-om-id="00055a4b:175"></circle>
+      <circle cx="825" cy="505" r="9" fill="#0B0E16" stroke="#2D5BFF" stroke-width="2.5" data-om-id="00055a4b:176"></circle>
+      <circle cx="1100" cy="415" r="9" fill="#0B0E16" stroke="#2D5BFF" stroke-width="2.5" data-om-id="00055a4b:177"></circle>
+      <circle cx="1200" cy="320" r="9" fill="#0B0E16" stroke="#2D5BFF" stroke-width="2.5" data-om-id="00055a4b:178"></circle>
+      <circle cx="1275" cy="240" r="9" fill="#0B0E16" stroke="#2D5BFF" stroke-width="2.5" data-om-id="00055a4b:179"></circle>
+      <circle cx="1325" cy="195" r="9" fill="#0B0E16" stroke="#2D5BFF" stroke-width="2.5" data-om-id="00055a4b:180"></circle>
+      <circle cx="1375" cy="170" r="9" fill="#0B0E16" stroke="#2D5BFF" stroke-width="2.5" data-om-id="00055a4b:181"></circle>
+      <circle cx="1430" cy="120" r="22" fill="rgba(45,91,255,0.25)" data-om-id="00055a4b:182"></circle>
+      <circle cx="1430" cy="120" r="11" fill="#0B0E16" stroke="#2D5BFF" stroke-width="2.5" data-om-id="00055a4b:183"></circle>
+
+      <g font-family="JetBrains Mono, ui-monospace, monospace" font-size="22" fill="rgba(244,240,232,0.62)" data-om-id="00055a4b:184">
+        <text x="400" y="715" text-anchor="middle" data-om-id="00055a4b:185">2023</text>
+        <text x="700" y="715" text-anchor="middle" data-om-id="00055a4b:186">2024</text>
+        <text x="1000" y="715" text-anchor="middle" data-om-id="00055a4b:187">2025</text>
+        <text x="1300" y="715" text-anchor="middle" data-om-id="00055a4b:188">2026</text>
+      </g>
+
+      <g font-family="Geist, sans-serif" fill="#F4F0E8" data-om-id="00055a4b:189">
+        <text x="475" y="595" font-size="22" font-weight="600" data-om-id="00055a4b:190">Claude 2</text>
+        <text x="475" y="622" font-size="18" fill="rgba(244,240,232,0.55)" font-family="JetBrains Mono, ui-monospace, monospace" letter-spacing="0.06em" data-om-id="00055a4b:191">JUL 2023</text>
+
+        <text x="650" y="490" font-size="22" font-weight="600" data-om-id="00055a4b:192">Claude Opus 3</text>
+        <text x="650" y="517" font-size="18" fill="rgba(244,240,232,0.55)" font-family="JetBrains Mono, ui-monospace, monospace" letter-spacing="0.06em" data-om-id="00055a4b:193">MAR 2024</text>
+
+        <text x="855" y="470" font-size="22" font-weight="600" data-om-id="00055a4b:194">Claude Sonnet 3.5</text>
+        <text x="855" y="497" font-size="18" fill="rgba(244,240,232,0.55)" font-family="JetBrains Mono, ui-monospace, monospace" letter-spacing="0.06em" data-om-id="00055a4b:195">JUN 2024</text>
+
+        <text x="1010" y="390" font-size="22" font-weight="600" data-om-id="00055a4b:196">Claude Opus 4</text>
+        <text x="1010" y="417" font-size="18" fill="rgba(244,240,232,0.55)" font-family="JetBrains Mono, ui-monospace, monospace" letter-spacing="0.06em" data-om-id="00055a4b:197">MAY 2025</text>
+
+        <text x="1075" y="290" font-size="22" font-weight="600" data-om-id="00055a4b:198">Claude Sonnet 4.5</text>
+        <text x="1075" y="317" font-size="18" fill="rgba(244,240,232,0.55)" font-family="JetBrains Mono, ui-monospace, monospace" letter-spacing="0.06em" data-om-id="00055a4b:199">SEP 2025</text>
+
+        <text x="1175" y="210" font-size="22" font-weight="600" data-om-id="00055a4b:200">Claude Opus 4.5</text>
+        <text x="1175" y="237" font-size="18" fill="rgba(244,240,232,0.55)" font-family="JetBrains Mono, ui-monospace, monospace" letter-spacing="0.06em" data-om-id="00055a4b:201">DIC 2025</text>
+
+        <text x="1220" y="160" font-size="22" font-weight="600" data-om-id="00055a4b:202">Claude Opus 4.6</text>
+        <text x="1220" y="187" font-size="18" fill="rgba(244,240,232,0.55)" font-family="JetBrains Mono, ui-monospace, monospace" letter-spacing="0.06em" data-om-id="00055a4b:203">FEB 2026</text>
+
+        <text x="1230" y="90" font-size="24" font-weight="600" fill="#2D5BFF" data-om-id="00055a4b:204">Claude Mythos Preview</text>
+        <text x="1230" y="117" font-size="18" fill="rgba(45,91,255,0.75)" font-family="JetBrains Mono, ui-monospace, monospace" letter-spacing="0.06em" data-om-id="00055a4b:205">ABR 2026</text>
+
+        <text x="1470" y="190" font-size="22" font-weight="600" data-om-id="00055a4b:206"><tspan x="1470" data-om-id="00055a4b:207">Claude</tspan><tspan x="1470" dy="26" data-om-id="00055a4b:208">Opus 4.7</tspan></text>
+        <text x="1470" y="247" font-size="18" fill="rgba(244,240,232,0.55)" font-family="JetBrains Mono, ui-monospace, monospace" letter-spacing="0.06em" data-om-id="00055a4b:209">ABR 2026</text>
+      </g>
+    </svg>
+  </div>
+
+  <div style="display: flex; justify-content: space-between; align-items: baseline; padding-top: 20px; border-top: 1px solid var(--hairline); font-family: var(--mono); font-size: 22px; letter-spacing: 0.06em; color: var(--ink-faint);" data-om-id="00055a4b:210">
+    <span style="text-transform: uppercase;" data-om-id="00055a4b:211">FUENTE: ANTHROPIC. (2026, 5 DE MAYO). AGENTS FOR FINANCIAL SERVICES</span>
+    <a href="https://www.anthropic.com/news/finance-agents" target="_blank" rel="noopener" style="color: var(--accent); text-decoration: none; letter-spacing: 0;" data-om-id="00055a4b:212"></a>
+  </div>
+</section><section data-label="06 Costo de no decidir" data-om-id="00055a4b:213" data-screen-label="07 06 Costo de no decidir" data-om-validate="no_overflowing_text,no_overlapping_text,slide_sized_text" data-deck-slide="6">
+  <div class="slide-head" style="margin-bottom: 32px;" data-om-id="00055a4b:214">
+    <h2 class="title" style="color: var(--ink);" data-om-id="00055a4b:215">Avances de la <span class="serif-display" style="color: var(--accent);" data-om-id="00055a4b:216">Inteligencia&nbsp; artificial</span> en 2026.</h2>
+    <div class="slide-head-right" style="color: var(--accent);" data-om-id="00055a4b:217">
+</div>
+  </div>
+
+  <div style="flex: 1; display: flex; align-items: center; justify-content: center; padding: 16px 0;" data-om-id="00055a4b:218">
+    <img src="assets/curva-anthropic-dark.png" alt="Curva exponencial: la programación cambió para siempre, las finanzas son lo siguiente" style="max-width: 100%; max-height: 100%; width: auto; height: auto; display: block; object-fit: contain;" data-om-id="00055a4b:219">
+  </div>
+
+  <div style="display: flex; justify-content: space-between; align-items: baseline; padding-top: 20px; border-top: 1px solid var(--hairline); font-family: var(--mono); font-size: 22px; letter-spacing: 0.06em; color: var(--ink-faint);" data-om-id="00055a4b:220">
+    <span style="text-transform: uppercase;" data-om-id="00055a4b:221">FUENTE: ANTHROPIC. (2026, 5 DE MAYO). AGENTS FOR FINANCIAL SERVICES</span>
+    <a href="https://www.anthropic.com/news/finance-agents" target="_blank" rel="noopener" style="color: var(--accent); text-decoration: none; letter-spacing: 0;" data-om-id="00055a4b:222">
+</a>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- 06 · COST OF INACTION — BIG STAT                              -->
+<!-- ============================================================ -->
+
+
+<!-- ============================================================ -->
+<!-- 07 · SECTION DIVIDER · OPORTUNIDAD                            -->
+<!-- ============================================================ -->
+<section data-label="09 Capas del stack" data-om-id="00055a4b:223" data-screen-label="08 09 Capas del stack" data-om-validate="no_overflowing_text,no_overlapping_text,slide_sized_text" data-deck-slide="7">
+  <div class="slide-head" style="margin-bottom: 28px;" data-om-id="00055a4b:224">
+    <h2 class="title" style="color: var(--ink);" data-om-id="00055a4b:225">Capas del <span class="serif-display" style="color: var(--accent);" data-om-id="00055a4b:226">stack tecnológico</span>.</h2>
+    <div class="slide-head-right" style="color: var(--accent);" data-om-id="00055a4b:227"></div>
+  </div>
+
+  <div style="flex: 1; display: grid; grid-template-rows: 1fr 1fr 1fr; grid-template-columns: 280px 1fr 1fr 1fr; gap: 14px;" data-om-id="00055a4b:228">
+
+    <div style="background: rgba(244,240,232,0.06); border: 1px solid rgba(244,240,232,0.10); border-radius: 14px; padding: 28px; display: flex; flex-direction: column; justify-content: center;" data-om-id="00055a4b:229">
+      <div style="font-family: var(--sans); font-size: 36px; font-weight: 500; color: var(--ink); letter-spacing: -0.015em;" data-om-id="00055a4b:230">Resultados</div>
+      <div style="font-family: var(--mono); font-size: 18px; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(244,240,232,0.55); margin-top: 8px;" data-om-id="00055a4b:231">LO QUE OBTIENE EL NEGOCIO</div>
+    </div>
+
+    <div style="background: var(--bg-2); border: 1px solid var(--hairline); border-radius: 14px; padding: 28px; display: flex; flex-direction: column; gap: 14px;" data-om-id="00055a4b:232">
+      <div data-om-id="00055a4b:233">
+        <div style="font-family: var(--serif); font-style: italic; font-size: 34px; color: var(--ink); line-height: 1.1;" data-om-id="00055a4b:234">Empleados más inteligentes</div>
+        <div style="font-size: 20px; color: var(--ink-dim); margin-top: 8px;" data-om-id="00055a4b:235">Claude al lado de cada persona.</div>
+      </div>
+      <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: auto;" data-om-id="00055a4b:236">
+        <span style="display: inline-block; background: var(--accent); color: var(--cream); font-family: var(--sans); font-size: 22px; font-weight: 500; padding: 8px 18px; border-radius: 8px;" data-om-id="00055a4b:237">Chat</span>
+        <span style="display: inline-block; background: var(--accent); color: var(--cream); font-family: var(--sans); font-size: 22px; font-weight: 500; padding: 8px 18px; border-radius: 8px;" data-om-id="00055a4b:238">Code</span>
+        <span style="display: inline-block; background: var(--accent); color: var(--cream); font-family: var(--sans); font-size: 22px; font-weight: 500; padding: 8px 18px; border-radius: 8px;" data-om-id="00055a4b:239">Cowork</span>
+      </div>
+    </div>
+
+    <div style="background: var(--bg-2); border: 1px solid var(--hairline); border-radius: 14px; padding: 28px; display: flex; flex-direction: column; gap: 14px;" data-om-id="00055a4b:240">
+      <div data-om-id="00055a4b:241">
+        <div style="font-family: var(--serif); font-style: italic; font-size: 34px; color: var(--ink); line-height: 1.1;" data-om-id="00055a4b:242">Procesos más rápidos</div>
+        <div style="font-size: 20px; color: var(--ink-dim); margin-top: 8px;" data-om-id="00055a4b:243">Agentes que corren flujos completos.</div>
+      </div>
+      <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: auto;" data-om-id="00055a4b:244">
+        <span style="display: inline-block; border: 1.5px dashed var(--accent); color: var(--accent); font-family: var(--sans); font-size: 22px; font-weight: 500; padding: 6.5px 16px; border-radius: 8px;" data-om-id="00055a4b:245"><br data-om-id="00055a4b:246"></span>
+        <span style="display: inline-block; border: 1.5px dashed var(--accent); color: var(--accent); font-family: var(--sans); font-size: 22px; font-weight: 500; padding: 6.5px 16px; border-radius: 8px;" data-om-id="00055a4b:247"><br data-om-id="00055a4b:248"></span>
+        <span style="display: inline-block; border: 1.5px dashed var(--accent); color: var(--accent); font-family: var(--sans); font-size: 22px; font-weight: 500; padding: 6.5px 16px; border-radius: 8px;" data-om-id="00055a4b:249">Plugins</span>
+      </div>
+    </div>
+
+    <div style="background: var(--bg-2); border: 1px solid var(--hairline); border-radius: 14px; padding: 28px; display: flex; flex-direction: column; gap: 14px;" data-om-id="00055a4b:250">
+      <div data-om-id="00055a4b:251">
+        <div style="font-family: var(--serif); font-style: italic; font-size: 34px; color: var(--ink); line-height: 1.1;" data-om-id="00055a4b:252">Productos transformadores</div>
+        <div style="font-size: 20px; color: var(--ink-dim); margin-top: 8px;" data-om-id="00055a4b:253">Experiencias para tus clientes con Claude.</div>
+      </div>
+    </div>
+
+    <div style="background: rgba(45,91,255,0.10); border: 1px solid rgba(45,91,255,0.25); border-radius: 14px; padding: 28px; display: flex; flex-direction: column; justify-content: center;" data-om-id="00055a4b:254">
+      <div style="font-family: var(--sans); font-size: 36px; font-weight: 500; color: var(--ink); letter-spacing: -0.015em;" data-om-id="00055a4b:255">Plataforma</div>
+      <div style="font-family: var(--mono); font-size: 18px; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(244,240,232,0.55); margin-top: 8px;" data-om-id="00055a4b:256">CÓMO LO CONSTRUYES Y OPERAS</div>
+    </div>
+
+    <div style="background: var(--bg-2); border: 1px solid var(--hairline); border-radius: 14px; padding: 28px; display: flex; flex-direction: column; gap: 14px;" data-om-id="00055a4b:257">
+      <div data-om-id="00055a4b:258">
+        <div style="font-family: var(--serif); font-style: italic; font-size: 34px; color: var(--ink); line-height: 1.1;" data-om-id="00055a4b:259">Primitivas</div>
+        <div style="font-size: 20px; color: var(--ink-dim); margin-top: 8px;" data-om-id="00055a4b:260">Bloques de construcción para personalización total.</div>
+      </div>
+      <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: auto;" data-om-id="00055a4b:261">
+        <span style="display: inline-block; border: 1.5px dashed var(--accent); color: var(--accent); font-family: var(--sans); font-size: 22px; font-weight: 500; padding: 6.5px 16px; border-radius: 8px;" data-om-id="00055a4b:262">API</span>
+        <span style="display: inline-block; border: 1.5px dashed var(--accent); color: var(--accent); font-family: var(--sans); font-size: 22px; font-weight: 500; padding: 6.5px 16px; border-radius: 8px;" data-om-id="00055a4b:263">Herramientas</span>
+        <span style="display: inline-block; border: 1.5px dashed var(--accent); color: var(--accent); font-family: var(--sans); font-size: 22px; font-weight: 500; padding: 6.5px 16px; border-radius: 8px;" data-om-id="00055a4b:264">Skills</span>
+        <span style="display: inline-block; border: 1.5px dashed var(--accent); color: var(--accent); font-family: var(--sans); font-size: 22px; font-weight: 500; padding: 6.5px 16px; border-radius: 8px;" data-om-id="00055a4b:265">Conectores</span>
+        <span style="display: inline-block; border: 1.5px dashed var(--accent); color: var(--accent); font-family: var(--sans); font-size: 22px; font-weight: 500; padding: 6.5px 16px; border-radius: 8px;" data-om-id="00055a4b:266">Subagentes</span>
+      </div>
+    </div>
+
+    <div style="background: var(--bg-2); border: 1px solid var(--hairline); border-radius: 14px; padding: 28px; display: flex; flex-direction: column; gap: 14px;" data-om-id="00055a4b:267">
+      <div data-om-id="00055a4b:268">
+        <div style="font-family: var(--serif); font-style: italic; font-size: 34px; color: var(--ink); line-height: 1.1;" data-om-id="00055a4b:269">Agentes gestionados</div>
+        <div style="font-size: 20px; color: var(--ink-dim); margin-top: 8px;" data-om-id="00055a4b:270">Infraestructura para agentes en producción.</div>
+      </div>
+      <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: auto;" data-om-id="00055a4b:271">
+        <span style="display: inline-block; border: 1.5px dashed var(--accent); color: var(--accent); font-family: var(--sans); font-size: 22px; font-weight: 500; padding: 6.5px 16px; border-radius: 8px;" data-om-id="00055a4b:272">Sandboxing</span>
+        <span style="display: inline-block; border: 1.5px dashed var(--accent); color: var(--accent); font-family: var(--sans); font-size: 22px; font-weight: 500; padding: 6.5px 16px; border-radius: 8px;" data-om-id="00055a4b:273">Harness</span>
+        <span style="display: inline-block; border: 1.5px dashed var(--accent); color: var(--accent); font-family: var(--sans); font-size: 22px; font-weight: 500; padding: 6.5px 16px; border-radius: 8px;" data-om-id="00055a4b:274">Orquestación</span>
+      </div>
+    </div>
+
+    <div style="background: var(--bg-2); border: 1px solid var(--hairline); border-radius: 14px; padding: 28px; display: flex; flex-direction: column; gap: 14px;" data-om-id="00055a4b:275">
+      <div data-om-id="00055a4b:276">
+        <div style="font-family: var(--serif); font-style: italic; font-size: 34px; color: var(--ink); line-height: 1.1;" data-om-id="00055a4b:277">Sistema operativo</div>
+        <div style="font-size: 20px; color: var(--ink-dim); margin-top: 8px;" data-om-id="00055a4b:278">Despliega, gobierna y monitorea a escala.</div>
+      </div>
+      <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: auto;" data-om-id="00055a4b:279">
+        <span style="display: inline-block; border: 1.5px dashed var(--accent); color: var(--accent); font-family: var(--sans); font-size: 22px; font-weight: 500; padding: 6.5px 16px; border-radius: 8px;" data-om-id="00055a4b:280">Auth</span>
+        <span style="display: inline-block; border: 1.5px dashed var(--accent); color: var(--accent); font-family: var(--sans); font-size: 22px; font-weight: 500; padding: 6.5px 16px; border-radius: 8px;" data-om-id="00055a4b:281">Controles</span>
+        <span style="display: inline-block; border: 1.5px dashed var(--accent); color: var(--accent); font-family: var(--sans); font-size: 22px; font-weight: 500; padding: 6.5px 16px; border-radius: 8px;" data-om-id="00055a4b:282">Auditoría</span>
+      </div>
+    </div>
+
+    <div style="background: var(--accent); border-radius: 14px; padding: 28px; display: flex; flex-direction: column; justify-content: center; color: var(--cream);" data-om-id="00055a4b:283">
+      <div style="font-family: var(--sans); font-size: 36px; font-weight: 500; letter-spacing: -0.015em;" data-om-id="00055a4b:284">Modelos</div>
+      <div style="font-family: var(--mono); font-size: 18px; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(244,240,232,0.85); margin-top: 8px;" data-om-id="00055a4b:285">LA INTELIGENCIA SUBYACENTE</div>
+    </div>
+
+    <div style="background: var(--bg-2); border: 1px solid var(--hairline); border-radius: 14px; padding: 28px; display: flex; flex-direction: column; justify-content: center; gap: 8px;" data-om-id="00055a4b:286">
+      <div style="display: flex; align-items: baseline; gap: 16px;" data-om-id="00055a4b:287">
+        <span style="color: var(--accent); font-size: 38px; line-height: 1;" data-om-id="00055a4b:288">✱</span>
+        <span style="font-family: var(--serif); font-style: italic; font-size: 40px; color: var(--ink); line-height: 1;" data-om-id="00055a4b:289">Claude Opus</span>
+      </div>
+      <div style="font-size: 22px; color: var(--ink-dim); padding-left: 54px;" data-om-id="00055a4b:290">Inteligencia líder de la industria.</div>
+    </div>
+
+    <div style="background: var(--bg-2); border: 1px solid var(--hairline); border-radius: 14px; padding: 28px; display: flex; flex-direction: column; justify-content: center; gap: 8px;" data-om-id="00055a4b:291">
+      <div style="display: flex; align-items: baseline; gap: 16px;" data-om-id="00055a4b:292">
+        <span style="color: var(--accent); font-size: 38px; line-height: 1;" data-om-id="00055a4b:293">✱</span>
+        <span style="font-family: var(--serif); font-style: italic; font-size: 40px; color: var(--ink); line-height: 1;" data-om-id="00055a4b:294">Claude Sonnet</span>
+      </div>
+      <div style="font-size: 22px; color: var(--ink-dim); padding-left: 54px;" data-om-id="00055a4b:295">Inteligencia de uso general.</div>
+    </div>
+
+    <div style="background: var(--bg-2); border: 1px solid var(--hairline); border-radius: 14px; padding: 28px; display: flex; flex-direction: column; justify-content: center; gap: 8px;" data-om-id="00055a4b:296">
+      <div style="display: flex; align-items: baseline; gap: 16px;" data-om-id="00055a4b:297">
+        <span style="color: var(--accent); font-size: 38px; line-height: 1;" data-om-id="00055a4b:298">✱</span>
+        <span style="font-family: var(--serif); font-style: italic; font-size: 40px; color: var(--ink); line-height: 1;" data-om-id="00055a4b:299">Claude Haiku</span>
+      </div>
+      <div style="font-size: 22px; color: var(--ink-dim); padding-left: 54px;" data-om-id="00055a4b:300">Inteligencia costo-efectiva.</div>
+    </div>
+
+  </div>
+
+  <div style="display: flex; justify-content: space-between; align-items: baseline; padding-top: 18px; margin-top: 18px; border-top: 1px solid var(--hairline); font-family: var(--mono); font-size: 22px; letter-spacing: 0.06em; color: var(--ink-faint);" data-om-id="00055a4b:301">
+    <span style="text-transform: uppercase;" data-om-id="00055a4b:302">FUENTE: ANTHROPIC. (2026, 5 DE MAYO). AGENTS FOR FINANCIAL SERVICES</span>
+    <span data-om-id="00055a4b:303"></span>
+  </div>
+</section><section data-label="07 Sección Oportunidad" data-om-id="00055a4b:304" data-screen-label="09 07 Sección Oportunidad" data-om-validate="no_overflowing_text,no_overlapping_text,slide_sized_text" data-deck-slide="8">
+  <div class="footer-row" style="top: 56px; bottom: auto;" data-om-id="00055a4b:305">
+    <span class="eyebrow" data-om-id="00055a4b:306"></span>
+    <span class="eyebrow" data-om-id="00055a4b:307">
+</span>
+  </div>
+
+  <div class="section-divider" data-om-id="00055a4b:308">
+    <div data-om-id="00055a4b:309">
+      <h2 class="section-num" data-om-id="00055a4b:310">02</h2>
+    </div>
+    <div style="padding-bottom: 24px;" data-om-id="00055a4b:311">
+      <p class="eyebrow" style="margin-bottom: 24px;" data-om-id="00055a4b:312">CASOS DE ÉXITO EN EL MUNDO</p>
+      <h3 class="section-name" style="margin-bottom: 40px;" data-om-id="00055a4b:313">Principales resultados</h3>
+      <p class="section-blurb" data-om-id="00055a4b:314">
+</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- 08 · INFLECTION POINT — STAT STRIP                            -->
+<!-- ============================================================ -->
+
+
+<!-- ============================================================ -->
+<!-- 09 · FROM DEMO TO PRODUCTION                                  -->
+<!-- ============================================================ -->
+
+
+<!-- ============================================================ -->
+<!-- 09b · CODING → FINANCE EXPONENTIAL                            -->
+<!-- ============================================================ -->
+
+
+<!-- ============================================================ -->
+<!-- 10 · SECTION DIVIDER · SOLUCIÓN                               -->
+<!-- ============================================================ -->
+<section data-label="10 Ingresos por empleado" data-om-id="00055a4b:315" data-screen-label="10 10 Ingresos por empleado" data-om-validate="no_overflowing_text,no_overlapping_text,slide_sized_text" data-deck-slide="9">
+  <div class="slide-head" style="margin-bottom: 16px;" data-om-id="00055a4b:316">
+    <h2 class="title" style="color: var(--ink); font-size: 52px; line-height: 1.1;" data-om-id="00055a4b:317">Ingresos anualizados <span class="serif-display" style="color: var(--accent);" data-om-id="00055a4b:318">por empleado</span>, ajustados por inflación.</h2>
+    <div class="slide-head-right" style="color: var(--accent);" data-om-id="00055a4b:319"></div>
+  </div>
+
+  <p style="font-size: 26px; color: var(--ink-dim); max-width: 1300px; margin: 0 0 24px; line-height: 1.35;" data-om-id="00055a4b:320">
+    Anthropic y OpenAI generan más ingresos por empleado que las grandes tecnológicas que cotizan en bolsa.
+  </p>
+
+  <div style="display: flex; justify-content: flex-end; gap: 36px; margin-bottom: 18px; font-family: var(--mono); font-size: 22px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-dim);" data-om-id="00055a4b:321">
+    <span style="display: inline-flex; align-items: center; gap: 12px;" data-om-id="00055a4b:322">
+      <span style="width: 22px; height: 14px; background: var(--accent); border-radius: 2px; display: inline-block;" data-om-id="00055a4b:323"></span>ACTUAL
+    </span>
+    <span style="display: inline-flex; align-items: center; gap: 12px;" data-om-id="00055a4b:324">
+      <span style="width: 22px; height: 14px; background: rgba(244,240,232,0.35); border-radius: 2px; display: inline-block;" data-om-id="00055a4b:325"></span>EN IPO
+    </span>
+  </div>
+
+  <div style="flex: 1; display: grid; grid-template-columns: 140px 1fr; column-gap: 28px; row-gap: 14px; align-content: start;" data-om-id="00055a4b:326">
+    <div data-om-id="00055a4b:327"></div>
+    <div style="position: relative; height: 26px; font-family: var(--mono); font-size: 20px; color: var(--ink-dim);" data-om-id="00055a4b:328">
+      <span style="position: absolute; left: 0%; transform: translateX(-50%);" data-om-id="00055a4b:329">$0</span>
+      <span style="position: absolute; left: 20%; transform: translateX(-50%);" data-om-id="00055a4b:330">$2M</span>
+      <span style="position: absolute; left: 40%; transform: translateX(-50%);" data-om-id="00055a4b:331">$4M</span>
+      <span style="position: absolute; left: 60%; transform: translateX(-50%);" data-om-id="00055a4b:332">$6M</span>
+      <span style="position: absolute; left: 80%; transform: translateX(-50%);" data-om-id="00055a4b:333">$8M</span>
+      <span style="position: absolute; left: 100%; transform: translateX(-50%);" data-om-id="00055a4b:334">$10M</span>
+    </div>
+
+    <div style="display: flex; align-items: center; font-size: 28px; color: var(--ink); font-weight: 500;" data-om-id="00055a4b:335">Anthropic</div>
+    <div style="position: relative; padding: 4px 0;" data-om-id="00055a4b:336">
+      <div style="position: absolute; inset: 0; pointer-events: none;" data-om-id="00055a4b:337">
+        <div style="position: absolute; top: 0; bottom: 0; left: 20%; width: 1px; background: rgba(244,240,232,0.08);" data-om-id="00055a4b:338"></div>
+        <div style="position: absolute; top: 0; bottom: 0; left: 40%; width: 1px; background: rgba(244,240,232,0.08);" data-om-id="00055a4b:339"></div>
+        <div style="position: absolute; top: 0; bottom: 0; left: 60%; width: 1px; background: rgba(244,240,232,0.08);" data-om-id="00055a4b:340"></div>
+        <div style="position: absolute; top: 0; bottom: 0; left: 80%; width: 1px; background: rgba(244,240,232,0.08);" data-om-id="00055a4b:341"></div>
+        <div style="position: absolute; top: 0; bottom: 0; left: 100%; width: 1px; background: rgba(244,240,232,0.08);" data-om-id="00055a4b:342"></div>
+      </div>
+      <div style="display: flex; align-items: center; gap: 14px; height: 38px;" data-om-id="00055a4b:343">
+        <div style="width: 90%; height: 100%; background: var(--accent); border-radius: 3px;" data-om-id="00055a4b:344"></div>
+        <span style="font-size: 24px; color: var(--ink); font-weight: 500; white-space: nowrap;" data-om-id="00055a4b:345">$9.0M</span>
+      </div>
+    </div>
+
+    <div style="display: flex; align-items: center; font-size: 28px; color: var(--ink); font-weight: 500;" data-om-id="00055a4b:346">OpenAI</div>
+    <div style="position: relative; padding: 4px 0;" data-om-id="00055a4b:347">
+      <div style="position: absolute; inset: 0; pointer-events: none;" data-om-id="00055a4b:348">
+        <div style="position: absolute; top: 0; bottom: 0; left: 20%; width: 1px; background: rgba(244,240,232,0.08);" data-om-id="00055a4b:349"></div>
+        <div style="position: absolute; top: 0; bottom: 0; left: 40%; width: 1px; background: rgba(244,240,232,0.08);" data-om-id="00055a4b:350"></div>
+        <div style="position: absolute; top: 0; bottom: 0; left: 60%; width: 1px; background: rgba(244,240,232,0.08);" data-om-id="00055a4b:351"></div>
+        <div style="position: absolute; top: 0; bottom: 0; left: 80%; width: 1px; background: rgba(244,240,232,0.08);" data-om-id="00055a4b:352"></div>
+        <div style="position: absolute; top: 0; bottom: 0; left: 100%; width: 1px; background: rgba(244,240,232,0.08);" data-om-id="00055a4b:353"></div>
+      </div>
+      <div style="display: flex; align-items: center; gap: 14px; height: 38px;" data-om-id="00055a4b:354">
+        <div style="width: 56%; height: 100%; background: var(--accent); border-radius: 3px;" data-om-id="00055a4b:355"></div>
+        <span style="font-size: 24px; color: var(--ink); font-weight: 500; white-space: nowrap;" data-om-id="00055a4b:356">$5.6M</span>
+      </div>
+    </div>
+
+    <div style="display: flex; align-items: center; font-size: 28px; color: var(--ink); font-weight: 500;" data-om-id="00055a4b:357">Nvidia</div>
+    <div style="position: relative; padding: 4px 0;" data-om-id="00055a4b:358">
+      <div style="position: absolute; inset: 0; pointer-events: none;" data-om-id="00055a4b:359">
+        <div style="position: absolute; top: 0; bottom: 0; left: 20%; width: 1px; background: rgba(244,240,232,0.08);" data-om-id="00055a4b:360"></div>
+        <div style="position: absolute; top: 0; bottom: 0; left: 40%; width: 1px; background: rgba(244,240,232,0.08);" data-om-id="00055a4b:361"></div>
+        <div style="position: absolute; top: 0; bottom: 0; left: 60%; width: 1px; background: rgba(244,240,232,0.08);" data-om-id="00055a4b:362"></div>
+        <div style="position: absolute; top: 0; bottom: 0; left: 80%; width: 1px; background: rgba(244,240,232,0.08);" data-om-id="00055a4b:363"></div>
+        <div style="position: absolute; top: 0; bottom: 0; left: 100%; width: 1px; background: rgba(244,240,232,0.08);" data-om-id="00055a4b:364"></div>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 4px;" data-om-id="00055a4b:365">
+        <div style="display: flex; align-items: center; gap: 14px; height: 26px;" data-om-id="00055a4b:366">
+          <div style="width: 51%; height: 100%; background: var(--accent); border-radius: 3px;" data-om-id="00055a4b:367"></div>
+          <span style="font-size: 22px; color: var(--ink); font-weight: 500; white-space: nowrap;" data-om-id="00055a4b:368">$5.1M</span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 14px; height: 26px;" data-om-id="00055a4b:369">
+          <div style="width: 23%; height: 100%; background: rgba(244,240,232,0.35); border-radius: 3px;" data-om-id="00055a4b:370"></div>
+          <span style="font-size: 22px; color: var(--ink-dim); white-space: nowrap;" data-om-id="00055a4b:371">$2.3M</span>
+        </div>
+      </div>
+    </div>
+
+    <div style="display: flex; align-items: center; font-size: 28px; color: var(--ink); font-weight: 500;" data-om-id="00055a4b:372">Meta</div>
+    <div style="position: relative; padding: 4px 0;" data-om-id="00055a4b:373">
+      <div style="position: absolute; inset: 0; pointer-events: none;" data-om-id="00055a4b:374">
+        <div style="position: absolute; top: 0; bottom: 0; left: 20%; width: 1px; background: rgba(244,240,232,0.08);" data-om-id="00055a4b:375"></div>
+        <div style="position: absolute; top: 0; bottom: 0; left: 40%; width: 1px; background: rgba(244,240,232,0.08);" data-om-id="00055a4b:376"></div>
+        <div style="position: absolute; top: 0; bottom: 0; left: 60%; width: 1px; background: rgba(244,240,232,0.08);" data-om-id="00055a4b:377"></div>
+        <div style="position: absolute; top: 0; bottom: 0; left: 80%; width: 1px; background: rgba(244,240,232,0.08);" data-om-id="00055a4b:378"></div>
+        <div style="position: absolute; top: 0; bottom: 0; left: 100%; width: 1px; background: rgba(244,240,232,0.08);" data-om-id="00055a4b:379"></div>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 4px;" data-om-id="00055a4b:380">
+        <div style="display: flex; align-items: center; gap: 14px; height: 26px;" data-om-id="00055a4b:381">
+          <div style="width: 25%; height: 100%; background: var(--accent); border-radius: 3px;" data-om-id="00055a4b:382"></div>
+          <span style="font-size: 22px; color: var(--ink); font-weight: 500; white-space: nowrap;" data-om-id="00055a4b:383">$2.5M</span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 14px; height: 26px;" data-om-id="00055a4b:384">
+          <div style="width: 17%; height: 100%; background: rgba(244,240,232,0.35); border-radius: 3px;" data-om-id="00055a4b:385"></div>
+          <span style="font-size: 22px; color: var(--ink-dim); white-space: nowrap;" data-om-id="00055a4b:386">$1.7M</span>
+        </div>
+      </div>
+    </div>
+
+    <div style="display: flex; align-items: center; font-size: 28px; color: var(--ink); font-weight: 500;" data-om-id="00055a4b:387">Apple</div>
+    <div style="position: relative; padding: 4px 0;" data-om-id="00055a4b:388">
+      <div style="position: absolute; inset: 0; pointer-events: none;" data-om-id="00055a4b:389">
+        <div style="position: absolute; top: 0; bottom: 0; left: 20%; width: 1px; background: rgba(244,240,232,0.08);" data-om-id="00055a4b:390"></div>
+        <div style="position: absolute; top: 0; bottom: 0; left: 40%; width: 1px; background: rgba(244,240,232,0.08);" data-om-id="00055a4b:391"></div>
+        <div style="position: absolute; top: 0; bottom: 0; left: 60%; width: 1px; background: rgba(244,240,232,0.08);" data-om-id="00055a4b:392"></div>
+        <div style="position: absolute; top: 0; bottom: 0; left: 80%; width: 1px; background: rgba(244,240,232,0.08);" data-om-id="00055a4b:393"></div>
+        <div style="position: absolute; top: 0; bottom: 0; left: 100%; width: 1px; background: rgba(244,240,232,0.08);" data-om-id="00055a4b:394"></div>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 4px;" data-om-id="00055a4b:395">
+        <div style="display: flex; align-items: center; gap: 14px; height: 26px;" data-om-id="00055a4b:396">
+          <div style="width: 25%; height: 100%; background: var(--accent); border-radius: 3px;" data-om-id="00055a4b:397"></div>
+          <span style="font-size: 22px; color: var(--ink); font-weight: 500; white-space: nowrap;" data-om-id="00055a4b:398">$2.5M</span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 14px; height: 26px;" data-om-id="00055a4b:399">
+          <div style="width: 6%; height: 100%; background: rgba(244,240,232,0.35); border-radius: 3px;" data-om-id="00055a4b:400"></div>
+          <span style="font-size: 22px; color: var(--ink-dim); white-space: nowrap;" data-om-id="00055a4b:401">$0.6M</span>
+        </div>
+      </div>
+    </div>
+
+    <div style="display: flex; align-items: center; font-size: 28px; color: var(--ink); font-weight: 500;" data-om-id="00055a4b:402">Google</div>
+    <div style="position: relative; padding: 4px 0;" data-om-id="00055a4b:403">
+      <div style="position: absolute; inset: 0; pointer-events: none;" data-om-id="00055a4b:404">
+        <div style="position: absolute; top: 0; bottom: 0; left: 20%; width: 1px; background: rgba(244,240,232,0.08);" data-om-id="00055a4b:405"></div>
+        <div style="position: absolute; top: 0; bottom: 0; left: 40%; width: 1px; background: rgba(244,240,232,0.08);" data-om-id="00055a4b:406"></div>
+        <div style="position: absolute; top: 0; bottom: 0; left: 60%; width: 1px; background: rgba(244,240,232,0.08);" data-om-id="00055a4b:407"></div>
+        <div style="position: absolute; top: 0; bottom: 0; left: 80%; width: 1px; background: rgba(244,240,232,0.08);" data-om-id="00055a4b:408"></div>
+        <div style="position: absolute; top: 0; bottom: 0; left: 100%; width: 1px; background: rgba(244,240,232,0.08);" data-om-id="00055a4b:409"></div>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 4px;" data-om-id="00055a4b:410">
+        <div style="display: flex; align-items: center; gap: 14px; height: 26px;" data-om-id="00055a4b:411">
+          <div style="width: 21%; height: 100%; background: var(--accent); border-radius: 3px;" data-om-id="00055a4b:412"></div>
+          <span style="font-size: 22px; color: var(--ink); font-weight: 500; white-space: nowrap;" data-om-id="00055a4b:413">$2.1M</span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 14px; height: 26px;" data-om-id="00055a4b:414">
+          <div style="width: 21%; height: 100%; background: rgba(244,240,232,0.35); border-radius: 3px;" data-om-id="00055a4b:415"></div>
+          <span style="font-size: 22px; color: var(--ink-dim); white-space: nowrap;" data-om-id="00055a4b:416">$2.1M</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <p style="font-size: 20px; color: var(--ink-faint); font-style: italic; margin: 18px 0 0; max-width: 1500px;" data-om-id="00055a4b:417">
+    Los ingresos por empleado de Anthropic y OpenAI usan el conteo de personal para evitar desfasajes entre fechas de reporte.
+  </p>
+
+  <div style="display: flex; justify-content: space-between; align-items: baseline; padding-top: 16px; margin-top: 16px; border-top: 1px solid var(--hairline); font-family: var(--mono); font-size: 22px; letter-spacing: 0.06em; color: var(--ink-faint);" data-om-id="00055a4b:418">
+    <span style="text-transform: uppercase;" data-om-id="00055a4b:419">FUENTE: EMBERSON, L. (2026, 8 DE MAYO). EPOCH AI</span>
+    <span data-om-id="00055a4b:420"></span>
+  </div>
+</section><section data-label="11 Caso Medvi" data-om-id="00055a4b:421" data-screen-label="11 11 Caso Medvi" data-om-validate="no_overflowing_text,no_overlapping_text,slide_sized_text" data-deck-slide="10">
+  <div style="display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 28px;" data-om-id="00055a4b:422">
+    <span class="eyebrow" style="color: var(--accent);" data-om-id="00055a4b:423">CASO DE ÉXITO · TELESALUD</span>
+    <span class="eyebrow" style="color: var(--ink-faint);" data-om-id="00055a4b:424">
+</span>
+  </div>
+
+  <div style="flex: 1; display: grid; grid-template-columns: 1.1fr 1fr; gap: 56px; align-items: stretch;" data-om-id="00055a4b:425">
+
+    <div style="display: flex; flex-direction: column; justify-content: space-between;" data-om-id="00055a4b:426">
+      <div data-om-id="00055a4b:427">
+        <h2 style="font-family: var(--sans); font-size: 88px; font-weight: 500; line-height: 0.98; letter-spacing: -0.03em; color: var(--ink); margin: 0; text-wrap: balance;" data-om-id="00055a4b:428">
+
+
+
+Una empresa de $1.8B en ventas anuales con dos empleados.</h2>
+
+        <p style="font-size: 28px; line-height: 1.4; color: var(--ink-dim); max-width: 720px; margin: 36px 0 0;" data-om-id="00055a4b:429">
+</p>
+      </div>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 16px;" data-om-id="00055a4b:430">
+
+      <div style="background: var(--accent); color: var(--cream); padding: 32px 36px; border-radius: 14px;" data-om-id="00055a4b:431">
+        <div style="font-family: var(--mono); font-size: 20px; letter-spacing: 0.08em; text-transform: uppercase; opacity: 0.85;" data-om-id="00055a4b:432">Proyección 2026</div>
+        <div style="font-family: var(--sans); font-size: 132px; font-weight: 500; line-height: 0.9; letter-spacing: -0.04em; margin-top: 8px;" data-om-id="00055a4b:433">$1.8B</div>
+        <div style="font-size: 22px; opacity: 0.9; margin-top: 12px;" data-om-id="00055a4b:434">en ventas anualizadas · ~$3M / día.</div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px;" data-om-id="00055a4b:435">
+        <div style="background: var(--bg-2); border: 1px solid var(--hairline); padding: 20px; border-radius: 12px;" data-om-id="00055a4b:436">
+          <div style="font-size: 42px; font-weight: 500; color: var(--ink); letter-spacing: -0.02em; line-height: 1;" data-om-id="00055a4b:437">$401M</div>
+          <div style="font-family: var(--mono); font-size: 18px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-dim); margin-top: 10px;" data-om-id="00055a4b:438">Año 1 (2025)</div>
+        </div>
+        <div style="background: var(--bg-2); border: 1px solid var(--hairline); padding: 20px; border-radius: 12px;" data-om-id="00055a4b:439">
+          <div style="font-size: 42px; font-weight: 500; color: var(--ink); letter-spacing: -0.02em; line-height: 1;" data-om-id="00055a4b:440">16.2%</div>
+          <div style="font-family: var(--mono); font-size: 18px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-dim); margin-top: 10px;" data-om-id="00055a4b:441">Margen neto</div>
+        </div>
+        <div style="background: var(--bg-2); border: 1px solid var(--hairline); padding: 20px; border-radius: 12px;" data-om-id="00055a4b:442">
+          <div style="font-size: 42px; font-weight: 500; color: var(--ink); letter-spacing: -0.02em; line-height: 1;" data-om-id="00055a4b:443">250k</div>
+          <div style="font-family: var(--mono); font-size: 18px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-dim); margin-top: 10px;" data-om-id="00055a4b:444">Clientes acum.</div>
+        </div>
+      </div>
+
+      <div style="background: var(--bg-2); border: 1px solid var(--hairline); padding: 22px 26px; border-radius: 12px;" data-om-id="00055a4b:445">
+        <div style="font-family: var(--mono); font-size: 18px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-dim); margin-bottom: 14px;" data-om-id="00055a4b:446">Stack de IA utilizado</div>
+        <div style="display: flex; flex-wrap: wrap; gap: 8px;" data-om-id="00055a4b:447">
+          <span style="display: inline-block; border: 1.5px dashed var(--accent); color: var(--accent); font-size: 20px; font-weight: 500; padding: 6px 14px; border-radius: 6px;" data-om-id="00055a4b:448">Claude</span>
+          <span style="display: inline-block; border: 1.5px dashed var(--accent); color: var(--accent); font-size: 20px; font-weight: 500; padding: 6px 14px; border-radius: 6px;" data-om-id="00055a4b:449">ChatGPT</span>
+          <span style="display: inline-block; border: 1.5px dashed var(--accent); color: var(--accent); font-size: 20px; font-weight: 500; padding: 6px 14px; border-radius: 6px;" data-om-id="00055a4b:450">Grok</span>
+          <span style="display: inline-block; border: 1.5px dashed var(--accent); color: var(--accent); font-size: 20px; font-weight: 500; padding: 6px 14px; border-radius: 6px;" data-om-id="00055a4b:451">MidJourney</span>
+          <span style="display: inline-block; border: 1.5px dashed var(--accent); color: var(--accent); font-size: 20px; font-weight: 500; padding: 6px 14px; border-radius: 6px;" data-om-id="00055a4b:452">Runway</span>
+          <span style="display: inline-block; border: 1.5px dashed var(--accent); color: var(--accent); font-size: 20px; font-weight: 500; padding: 6px 14px; border-radius: 6px;" data-om-id="00055a4b:453">ElevenLabs</span>
+        </div>
+      </div>
+
+      <div style="padding: 14px 24px; background: var(--bg-2); border: 1px solid var(--hairline); border-radius: 12px;" data-om-id="00055a4b:454">
+        <div style="font-size: 22px; color: var(--ink-dim); line-height: 1.3;" data-om-id="00055a4b:455">vs. <span style="color: var(--ink); font-weight: 500;" data-om-id="00055a4b:456">Hims &amp; Hers</span> (2,400+ empleados): margen neto <span style="color: var(--ink); font-weight: 500;" data-om-id="00055a4b:457">5.5%</span>.</div>
+      </div>
+    </div>
+
+  </div>
+
+  <div style="display: flex; justify-content: space-between; align-items: baseline; padding-top: 16px; margin-top: 22px; border-top: 1px solid var(--hairline); font-family: var(--mono); font-size: 22px; letter-spacing: 0.06em; color: var(--ink-faint);" data-om-id="00055a4b:458">
+    <span style="text-transform: uppercase;" data-om-id="00055a4b:459">FUENTE: THE NEW YORK TIMES. (2026, 2 DE ABRIL). AI BILLION-DOLLAR COMPANY MEDVI</span>
+    <span data-om-id="00055a4b:460"></span>
+  </div>
+</section><section data-label="10 Sección Solución" data-om-id="00055a4b:461" data-screen-label="12 10 Sección Solución" data-om-validate="no_overflowing_text,no_overlapping_text,slide_sized_text" data-deck-slide="11">
+  <div class="footer-row" style="top: 56px; bottom: auto;" data-om-id="00055a4b:462">
+    <span class="eyebrow" data-om-id="00055a4b:463"></span>
+    <span class="eyebrow" data-om-id="00055a4b:464">
+</span>
+  </div>
+
+  <div class="section-divider" data-om-id="00055a4b:465">
+    <div data-om-id="00055a4b:466">
+      <h2 class="section-num" data-om-id="00055a4b:467">03</h2>
+    </div>
+    <div style="padding-bottom: 24px;" data-om-id="00055a4b:468">
+      <p class="eyebrow" style="margin-bottom: 24px;" data-om-id="00055a4b:469">avances en el perú</p>
+      <h3 class="section-name" style="margin-bottom: 40px;" data-om-id="00055a4b:470">Las reglas de juego están dadas.</h3>
+      <p class="section-blurb" style="" data-om-id="00055a4b:471"><br data-om-id="00055a4b:472"></p>
+    </div>
+  </div>
+</section>
+
+<section data-label="15 Marco normativo IA · Detalle" data-om-id="00055a4b:473" data-screen-label="13 15 Marco normativo IA · Detalle" data-om-validate="no_overflowing_text,no_overlapping_text,slide_sized_text" data-deck-slide="12">
+  <div style="display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 28px;" data-om-id="00055a4b:474">
+    <span class="eyebrow" style="color: var(--accent);" data-om-id="00055a4b:475">AVANCES EN EL PERÚ · MARCO NORMATIVO IA</span>
+    <span class="eyebrow" style="color: var(--ink-faint);" data-om-id="00055a4b:476"><br data-om-id="00055a4b:477"></span>
+  </div>
+
+  <h2 class="title" style="color: var(--ink); font-size: 56px; line-height: 1.05; margin: 0 0 36px;" data-om-id="00055a4b:478">Tres hitos que definen las <span class="serif-display" style="color: var(--accent);" data-om-id="00055a4b:479">reglas de juego</span> en el Perú.</h2>
+
+  <div style="position: relative; height: 40px; margin: 0 60px 8px;" data-om-id="00055a4b:480">
+    <div style="position: absolute; left: 0; right: 0; top: 50%; height: 2px; background: var(--hairline);" data-om-id="00055a4b:481"></div>
+    <div style="position: absolute; left: 16.6%; top: 50%; transform: translate(-50%, -50%); width: 22px; height: 22px; background: var(--accent); border-radius: 50%; box-shadow: 0 0 0 6px rgba(45,91,255,0.18);" data-om-id="00055a4b:482"></div>
+    <div style="position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); width: 22px; height: 22px; background: var(--accent); border-radius: 50%; box-shadow: 0 0 0 6px rgba(45,91,255,0.18);" data-om-id="00055a4b:483"></div>
+    <div style="position: absolute; left: 83.3%; top: 50%; transform: translate(-50%, -50%); width: 22px; height: 22px; background: var(--accent); border-radius: 50%; box-shadow: 0 0 0 6px rgba(45,91,255,0.18);" data-om-id="00055a4b:484"></div>
+  </div>
+
+  <div style="flex: 1; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 24px; align-items: stretch;" data-om-id="00055a4b:485">
+
+    <div style="display: flex; flex-direction: column; padding: 28px; background: var(--bg-2); border: 1px solid var(--hairline); border-radius: 14px;" data-om-id="00055a4b:486">
+      <div style="font-family: var(--mono); font-size: 18px; letter-spacing: 0.08em; color: var(--accent); text-transform: uppercase;" data-om-id="00055a4b:487">5 julio 2023</div>
+      <h3 style="font-size: 32px; font-weight: 500; color: var(--ink); margin: 8px 0 4px; line-height: 1.15; letter-spacing: -0.015em;" data-om-id="00055a4b:488">Ley N° 31814</h3>
+      <div class="serif-display" style="font-size: 26px; color: var(--ink-dim); line-height: 1.25; margin-bottom: 18px;" data-om-id="00055a4b:489">Ley que promueve el uso de la IA para el desarrollo económico y social.</div>
+
+      <div style="border-top: 1px solid var(--hairline); padding-top: 16px; margin-top: auto;" data-om-id="00055a4b:490">
+        <div style="font-family: var(--mono); font-size: 16px; letter-spacing: 0.08em; color: var(--ink-faint); text-transform: uppercase; margin-bottom: 12px;" data-om-id="00055a4b:491">3 ideas principales</div>
+        <ol style="margin: 0; padding-left: 22px; font-size: 20px; line-height: 1.4; color: var(--ink); display: flex; flex-direction: column; gap: 10px;" data-om-id="00055a4b:492">
+          <li data-om-id="00055a4b:493">Define la IA como tecnología de propósito general al servicio del bienestar, privilegiando a la persona y los derechos humanos.</li>
+          <li data-om-id="00055a4b:494">Fija principios rectores: enfoque basado en riesgos, pluralidad de actores, gobernanza ética, privacidad y seguridad.</li>
+          <li data-om-id="00055a4b:495">Designa a la PCM (SGTD) como Autoridad Nacional y manda al Ejecutivo reglamentar en 90 días hábiles.</li>
+        </ol>
+      </div>
+    </div>
+
+    <div style="display: flex; flex-direction: column; padding: 28px; background: var(--bg-2); border: 1px solid var(--hairline); border-radius: 14px;" data-om-id="00055a4b:496">
+      <div style="font-family: var(--mono); font-size: 18px; letter-spacing: 0.08em; color: var(--accent); text-transform: uppercase;" data-om-id="00055a4b:497">9 septiembre 2025</div>
+      <h3 style="font-size: 32px; font-weight: 500; color: var(--ink); margin: 8px 0 4px; line-height: 1.15; letter-spacing: -0.015em;" data-om-id="00055a4b:498">DS N° 115-2025-PCM</h3>
+      <div class="serif-display" style="font-size: 26px; color: var(--ink-dim); line-height: 1.25; margin-bottom: 18px;" data-om-id="00055a4b:499">Reglamento de la Ley 31814 · vigente desde el 22 de enero de 2026.</div>
+
+      <div style="border-top: 1px solid var(--hairline); padding-top: 16px; margin-top: auto;" data-om-id="00055a4b:500">
+        <div style="font-family: var(--mono); font-size: 16px; letter-spacing: 0.08em; color: var(--ink-faint); text-transform: uppercase; margin-bottom: 12px;" data-om-id="00055a4b:501">3 ideas principales</div>
+        <ol style="margin: 0; padding-left: 22px; font-size: 20px; line-height: 1.4; color: var(--ink); display: flex; flex-direction: column; gap: 10px;" data-om-id="00055a4b:502">
+          <li data-om-id="00055a4b:503">Clasifica los sistemas de IA por riesgo: uso indebido (prohibido), riesgo alto y riesgo aceptable.</li>
+          <li data-om-id="00055a4b:504">Obligaciones para el sector privado: políticas internas, transparencia algorítmica, supervisión humana y evaluación de impacto.</li>
+          <li data-om-id="00055a4b:505">Cronograma gradual por sector: salud / educación / finanzas → 2026 · transporte → 2027 · minería y agro → 2028.</li>
+        </ol>
+      </div>
+    </div>
+
+    <div style="display: flex; flex-direction: column; padding: 28px; background: var(--bg-2); border: 1px solid var(--accent); border-radius: 14px;" data-om-id="00055a4b:506">
+      <div style="font-family: var(--mono); font-size: 18px; letter-spacing: 0.08em; color: var(--accent); text-transform: uppercase;" data-om-id="00055a4b:507">29 abril 2026</div>
+      <h3 style="font-size: 32px; font-weight: 500; color: var(--ink); margin: 8px 0 4px; line-height: 1.15; letter-spacing: -0.015em;" data-om-id="00055a4b:508">RM N° 152-2026-PCM</h3>
+      <div class="serif-display" style="font-size: 26px; color: var(--ink-dim); line-height: 1.25; margin-bottom: 18px;" data-om-id="00055a4b:509">Estrategia Nacional de Inteligencia Artificial (ENIA).</div>
+
+      <div style="border-top: 1px solid var(--hairline); padding-top: 16px; margin-top: auto;" data-om-id="00055a4b:510">
+        <div style="font-family: var(--mono); font-size: 16px; letter-spacing: 0.08em; color: var(--ink-faint); text-transform: uppercase; margin-bottom: 12px;" data-om-id="00055a4b:511">3 ideas principales</div>
+        <ol style="margin: 0; padding-left: 22px; font-size: 20px; line-height: 1.4; color: var(--ink); display: flex; flex-direction: column; gap: 10px;" data-om-id="00055a4b:512">
+          <li data-om-id="00055a4b:513">Define los ejes estratégicos del país: talento, datos, infraestructura, gobernanza y adopción sectorial.</li>
+          <li data-om-id="00055a4b:514">Articula al Estado, la academia, el sector privado y la sociedad civil bajo la rectoría de la PCM-SGTD.</li>
+          <li data-om-id="00055a4b:515">Traza metas operativas hacia 2030 para hacer del Perú un país competitivo en IA en la región.</li>
+        </ol>
+      </div>
+    </div>
+
+  </div>
+
+  <div style="display: flex; justify-content: space-between; align-items: baseline; padding-top: 16px; margin-top: 24px; border-top: 1px solid var(--hairline); font-family: var(--mono); font-size: 22px; letter-spacing: 0.06em; color: var(--ink-faint);" data-om-id="00055a4b:516">
+    <span style="text-transform: uppercase;" data-om-id="00055a4b:517">FUENTE: DIARIO oficial EL PERUANo</span>
+    <span data-om-id="00055a4b:518"></span>
+  </div>
+</section><section data-label="14 Sección Banca" data-om-id="00055a4b:519" data-screen-label="14 14 Sección Banca" data-om-validate="no_overflowing_text,no_overlapping_text,slide_sized_text" data-deck-slide="13">
+  <div class="footer-row" style="top: 56px; bottom: auto;" data-om-id="00055a4b:520">
+    <span class="eyebrow" data-om-id="00055a4b:521"></span>
+    <span class="eyebrow" data-om-id="00055a4b:522"></span>
+  </div>
+
+  <div class="section-divider" data-om-id="00055a4b:523">
+    <div data-om-id="00055a4b:524">
+      <h2 class="section-num" data-om-id="00055a4b:525">04</h2>
+    </div>
+    <div style="padding-bottom: 24px;" data-om-id="00055a4b:526">
+      <p class="eyebrow" style="margin-bottom: 24px;" data-om-id="00055a4b:527">BANCA</p>
+      <h3 class="section-name" style="margin-bottom: 40px;" data-om-id="00055a4b:528">La programación cambio para siempre. Las finanzas es lo siguiente.</h3>
+      <p class="section-blurb" data-om-id="00055a4b:529"></p>
+    </div>
+  </div>
+</section><section data-label="12 Casos empresariales" data-om-id="00055a4b:530" data-screen-label="15 12 Casos empresariales" data-om-validate="no_overflowing_text,no_overlapping_text,slide_sized_text" data-deck-slide="14">
+  <div style="display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 28px;" data-om-id="00055a4b:531">
+    <span class="eyebrow" style="color: var(--accent);" data-om-id="00055a4b:532">CASOS DE ÉXITO · ADOPCIÓN EMPRESARIAL</span>
+    <span class="eyebrow" style="color: var(--ink-faint);" data-om-id="00055a4b:533"><br data-om-id="00055a4b:534"></span>
+  </div>
+
+  <div style="flex: 1; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 24px;" data-om-id="00055a4b:535">
+
+    <div style="display: flex; flex-direction: column; padding: 36px 32px; background: var(--bg-2); border: 1px solid var(--hairline); border-radius: 14px;" data-om-id="00055a4b:536">
+      <div style="display: flex; align-items: center; gap: 14px; margin-bottom: 32px;" data-om-id="00055a4b:537">
+        <span style="font-family: var(--sans); font-size: 32px; font-weight: 600; color: var(--accent); letter-spacing: -0.02em;" data-om-id="00055a4b:538">Allianz</span>
+        <svg viewBox="0 0 32 32" width="28" height="28" aria-hidden="true" data-om-id="00055a4b:539">
+          <circle cx="16" cy="16" r="15" fill="none" stroke="var(--accent)" stroke-width="2" data-om-id="00055a4b:540"></circle>
+          <path d="M16 6 L20 16 L16 26 L12 16 Z" fill="var(--accent)" data-om-id="00055a4b:541"></path>
+        </svg>
+      </div>
+      <h3 class="serif-display" style="font-size: 38px; line-height: 1.1; color: var(--ink); margin: 0 0 36px;" data-om-id="00055a4b:542">Un compañero de trabajo para cada suscriptor y analista de siniestros.</h3>
+      <div style="display: flex; align-items: center; gap: 16px; margin-top: auto;" data-om-id="00055a4b:543">
+        <div style="width: 64px; height: 64px; border-radius: 50%; background: var(--bg-3); border: 1px solid var(--hairline); display: flex; align-items: center; justify-content: center; flex-shrink: 0;" data-om-id="00055a4b:544">
+          <svg viewBox="0 0 24 24" width="34" height="34" aria-hidden="true" data-om-id="00055a4b:545">
+            <circle cx="12" cy="9" r="4" fill="rgba(244,240,232,0.55)" data-om-id="00055a4b:546"></circle>
+            <path d="M4 20 Q12 14 20 20 L20 22 L4 22 Z" fill="rgba(244,240,232,0.55)" data-om-id="00055a4b:547"></path>
+          </svg>
+        </div>
+        <div data-om-id="00055a4b:548">
+          <div style="font-size: 22px; font-weight: 500; color: var(--ink); line-height: 1.2;" data-om-id="00055a4b:549">Dr. Axel Schell</div>
+          <div style="font-size: 20px; color: var(--ink-dim); line-height: 1.2;" data-om-id="00055a4b:550">Chief Technology Officer</div>
+        </div>
+      </div>
+      <div style="margin-top: 28px; padding-left: 16px; border-left: 2px solid var(--accent);" data-om-id="00055a4b:551">
+        <div style="font-family: var(--sans); font-size: 56px; font-weight: 500; color: var(--ink); line-height: 1; letter-spacing: -0.02em;" data-om-id="00055a4b:552">50K+</div>
+        <div style="font-size: 20px; color: var(--ink-dim); margin-top: 8px; line-height: 1.3;" data-om-id="00055a4b:553">empleados objetivo del rollout de Cowork.</div>
+      </div>
+    </div>
+
+    <div style="display: flex; flex-direction: column; padding: 36px 32px; background: var(--bg-2); border: 1px solid var(--hairline); border-radius: 14px;" data-om-id="00055a4b:554">
+      <div style="display: flex; align-items: center; gap: 14px; margin-bottom: 32px;" data-om-id="00055a4b:555">
+        <svg viewBox="0 0 32 32" width="24" height="24" aria-hidden="true" data-om-id="00055a4b:556">
+          <path d="M4 16 L18 6 L18 12 L26 12 L26 20 L18 20 L18 26 Z" fill="var(--accent)" data-om-id="00055a4b:557"></path>
+        </svg>
+        <span style="font-family: var(--sans); font-size: 32px; font-weight: 700; color: var(--ink); letter-spacing: -0.02em;" data-om-id="00055a4b:558">BNY</span>
+      </div>
+      <h3 class="serif-display" style="font-size: 38px; line-height: 1.1; color: var(--ink); margin: 0 0 36px;" data-om-id="00055a4b:559">Empleados digitales sobre Claude que operan cada proceso de punta a punta.</h3>
+      <div style="display: flex; align-items: center; gap: 16px; margin-top: auto;" data-om-id="00055a4b:560">
+        <div style="width: 64px; height: 64px; border-radius: 50%; background: var(--bg-3); border: 1px solid var(--hairline); display: flex; align-items: center; justify-content: center; flex-shrink: 0;" data-om-id="00055a4b:561">
+          <svg viewBox="0 0 24 24" width="34" height="34" aria-hidden="true" data-om-id="00055a4b:562">
+            <circle cx="12" cy="9" r="4" fill="rgba(244,240,232,0.55)" data-om-id="00055a4b:563"></circle>
+            <path d="M4 20 Q12 14 20 20 L20 22 L4 22 Z" fill="rgba(244,240,232,0.55)" data-om-id="00055a4b:564"></path>
+          </svg>
+        </div>
+        <div data-om-id="00055a4b:565">
+          <div style="font-size: 22px; font-weight: 500; color: var(--ink); line-height: 1.2;" data-om-id="00055a4b:566">Leigh-Ann Russell</div>
+          <div style="font-size: 20px; color: var(--ink-dim); line-height: 1.2;" data-om-id="00055a4b:567">CIO &amp; Global Head of Engineering</div>
+        </div>
+      </div>
+      <div style="margin-top: 28px; padding-left: 16px; border-left: 2px solid var(--accent);" data-om-id="00055a4b:568">
+        <div style="font-family: var(--sans); font-size: 56px; font-weight: 500; color: var(--ink); line-height: 1; letter-spacing: -0.02em;" data-om-id="00055a4b:569">220</div>
+        <div style="font-size: 20px; color: var(--ink-dim); margin-top: 8px; line-height: 1.3;" data-om-id="00055a4b:570">soluciones de IA en producción.</div>
+      </div>
+    </div>
+
+    <div style="display: flex; flex-direction: column; padding: 36px 32px; background: var(--bg-2); border: 1px solid var(--hairline); border-radius: 14px;" data-om-id="00055a4b:571">
+      <div style="display: flex; align-items: center; gap: 14px; margin-bottom: 32px;" data-om-id="00055a4b:572">
+        <span style="font-family: var(--serif); font-style: italic; font-size: 36px; font-weight: 500; color: var(--accent); letter-spacing: -0.02em; line-height: 1;" data-om-id="00055a4b:573">Moody's</span>
+      </div>
+      <h3 class="serif-display" style="font-size: 38px; line-height: 1.1; color: var(--ink); margin: 0 0 36px;" data-om-id="00055a4b:574">Productos agénticos sobre un siglo de inteligencia de crédito y cumplimiento.</h3>
+      <div style="display: flex; align-items: center; gap: 16px; margin-top: auto;" data-om-id="00055a4b:575">
+        <div style="width: 64px; height: 64px; border-radius: 50%; background: var(--bg-3); border: 1px solid var(--hairline); display: flex; align-items: center; justify-content: center; flex-shrink: 0;" data-om-id="00055a4b:576">
+          <svg viewBox="0 0 24 24" width="34" height="34" aria-hidden="true" data-om-id="00055a4b:577">
+            <circle cx="12" cy="9" r="4" fill="rgba(244,240,232,0.55)" data-om-id="00055a4b:578"></circle>
+            <path d="M4 20 Q12 14 20 20 L20 22 L4 22 Z" fill="rgba(244,240,232,0.55)" data-om-id="00055a4b:579"></path>
+          </svg>
+        </div>
+        <div data-om-id="00055a4b:580">
+          <div style="font-size: 22px; font-weight: 500; color: var(--ink); line-height: 1.2;" data-om-id="00055a4b:581">Rob Fauber</div>
+          <div style="font-size: 20px; color: var(--ink-dim); line-height: 1.2;" data-om-id="00055a4b:582">Chief Executive Officer</div>
+        </div>
+      </div>
+      <div style="margin-top: 28px; padding-left: 16px; border-left: 2px solid var(--accent);" data-om-id="00055a4b:583">
+        <div style="font-family: var(--sans); font-size: 52px; font-weight: 500; color: var(--ink); line-height: 1; letter-spacing: -0.02em;" data-om-id="00055a4b:584">40 hrs <span style="color: var(--accent);" data-om-id="00055a4b:585">→</span> 2 min</div>
+        <div style="font-size: 20px; color: var(--ink-dim); margin-top: 8px; line-height: 1.3;" data-om-id="00055a4b:586">Memo de crédito con agentes Moody's sobre Claude.</div>
+      </div>
+    </div>
+
+  </div>
+
+  <div style="display: flex; justify-content: space-between; align-items: baseline; padding-top: 16px; margin-top: 24px; border-top: 1px solid var(--hairline); font-family: var(--mono); font-size: 22px; letter-spacing: 0.06em; color: var(--ink-faint);" data-om-id="00055a4b:587">
+    <span style="text-transform: uppercase;" data-om-id="00055a4b:588">FUENTE: ANTHROPIC. (2026). ENTERPRISE CASE STUDIES</span>
+    <span data-om-id="00055a4b:589"></span>
+  </div>
+</section>
+
+<section data-label="17 Ecosistema de IA · Servicios financieros" style="padding: 0;" data-om-id="00055a4b:676" data-screen-label="16 17 Ecosistema de IA · Servicios financieros" data-om-validate="no_overflowing_text,no_overlapping_text,slide_sized_text" data-deck-slide="15">
+  <img src="assets/nvidia-robotics-ecosystem.png" alt="Ecosistema de robótica y agentes de IA mostrado en NVIDIA GTC" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 0;" data-om-id="00055a4b:677">
+
+  <!-- Gradient overlay for legibility -->
+  <div style="position: absolute; inset: 0; background: linear-gradient(180deg, rgba(11,14,22,0.65) 0%, rgba(11,14,22,0.05) 30%, rgba(11,14,22,0.05) 55%, rgba(11,14,22,0.95) 100%); z-index: 1;" data-om-id="00055a4b:678"></div>
+
+  <!-- Top eyebrow -->
+  <div style="position: absolute; top: 56px; left: var(--pad-x); right: var(--pad-x); z-index: 2; display: flex; justify-content: space-between; align-items: baseline;" data-om-id="00055a4b:679">
+    <span class="eyebrow" style="color: var(--accent);" data-om-id="00055a4b:680"><span style="color: rgb(255, 255, 255);" data-om-id="00055a4b:681">CASO DE USO · SERVICIOS FINANCIEROS</span></span>
+    <span class="eyebrow" style="color: var(--ink);" data-om-id="00055a4b:682"><br data-om-id="00055a4b:683"></span>
+  </div>
+
+  <!-- Bottom block -->
+  <div style="position: absolute; left: var(--pad-x); right: var(--pad-x); bottom: 88px; z-index: 2; display: grid; grid-template-columns: 1.4fr 1fr; gap: 64px; align-items: end;" data-om-id="00055a4b:684">
+    <div data-om-id="00055a4b:685">
+      <h2 class="title" style="color: var(--ink); font-size: 76px; line-height: 0.98; margin: 0 0 20px;" data-om-id="00055a4b:686">La banca ya no compra software. <span class="serif-display" style="color: var(--accent);" data-om-id="00055a4b:687">Contrata agentes.</span></h2>
+      <p style="font-size: 28px; color: var(--ink); line-height: 1.35; margin: 0; max-width: 940px; opacity: 0.92;" data-om-id="00055a4b:688">Modelos, robots y agentes especializados se integran al stack financiero para operar suscripción, riesgo, cumplimiento y atención al cliente — auditables, gobernados y a costo unitario predecible.</p>
+    </div>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;" data-om-id="00055a4b:689">
+      <div style="background: rgba(11,14,22,0.7); backdrop-filter: blur(8px); border: 1px solid rgba(244,240,232,0.2); border-radius: 12px; padding: 22px 24px;" data-om-id="00055a4b:690">
+        <div style="font-family: var(--sans); font-size: 56px; font-weight: 500; color: var(--ink); line-height: 1; letter-spacing: -0.02em;" data-om-id="00055a4b:691">30+</div>
+        <div style="font-family: var(--mono); font-size: 18px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent); margin-top: 10px;" data-om-id="00055a4b:692">Modelos y agentes integrables</div>
+      </div>
+      <div style="background: rgba(11,14,22,0.7); backdrop-filter: blur(8px); border: 1px solid rgba(244,240,232,0.2); border-radius: 12px; padding: 22px 24px;" data-om-id="00055a4b:693">
+        <div style="font-family: var(--sans); font-size: 56px; font-weight: 500; color: var(--ink); line-height: 1; letter-spacing: -0.02em;" data-om-id="00055a4b:694">1 API</div>
+        <div style="font-family: var(--mono); font-size: 18px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent); margin-top: 10px;" data-om-id="00055a4b:695">Orquestación común</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div style="position: absolute; left: var(--pad-x); right: var(--pad-x); bottom: 28px; z-index: 2; display: flex; justify-content: space-between; align-items: baseline; font-family: var(--mono); font-size: 20px; letter-spacing: 0.06em; color: rgba(244,240,232,0.5);" data-om-id="00055a4b:696">
+    <span style="text-transform: uppercase;" data-om-id="00055a4b:697">IMAGEN: NVIDIA GTC · ECOSISTEMA DE ROBÓTICA Y AGENTES</span>
+    <span data-om-id="00055a4b:698"></span>
+  </div>
+</section><section data-label="15 Sección Minería" data-om-id="00055a4b:699" data-screen-label="17 15 Sección Minería" data-om-validate="no_overflowing_text,no_overlapping_text,slide_sized_text" data-deck-slide="16">
+  <div class="footer-row" style="top: 56px; bottom: auto;" data-om-id="00055a4b:700">
+    <span class="eyebrow" data-om-id="00055a4b:701"></span>
+    <span class="eyebrow" data-om-id="00055a4b:702"></span>
+  </div>
+
+  <div class="section-divider" data-om-id="00055a4b:703">
+    <div data-om-id="00055a4b:704">
+      <h2 class="section-num" data-om-id="00055a4b:705">05</h2>
+    </div>
+    <div style="padding-bottom: 24px;" data-om-id="00055a4b:706">
+      <p class="eyebrow" style="margin-bottom: 24px;" data-om-id="00055a4b:707">MINERÍA</p>
+      <h3 class="section-name" style="margin-bottom: 40px;" data-om-id="00055a4b:708">Robótica para mantenimiento preventivo</h3>
+      <p class="section-blurb" data-om-id="00055a4b:709"></p>
+    </div>
+  </div>
+</section>
+
+
+
+<section data-label="18 Robótica minera · 2" style="padding: 0;" data-om-id="00055a4b:731" data-screen-label="19 18 Robótica minera · 2" data-om-validate="no_overflowing_text,no_overlapping_text,slide_sized_text" data-deck-slide="18">
+  <img src="assets/robot-mineria.png" alt="Robot cuadrúpedo Spot escaneando un túnel minero con LiDAR" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 0;" data-om-id="00055a4b:732">
+
+  <!-- Gradient overlay for legibility -->
+  <div style="position: absolute; inset: 0; background: linear-gradient(180deg, rgba(11,14,22,0.55) 0%, rgba(11,14,22,0.15) 35%, rgba(11,14,22,0.10) 65%, rgba(11,14,22,0.85) 100%); z-index: 1;" data-om-id="00055a4b:733"></div>
+
+  <!-- Top eyebrow -->
+  <div style="position: absolute; top: 56px; left: var(--pad-x); right: var(--pad-x); z-index: 2; display: flex; justify-content: space-between; align-items: baseline;" data-om-id="00055a4b:734">
+    <span class="eyebrow" style="color: rgb(255, 255, 255);" data-om-id="00055a4b:735">CASO DE USO · MINERÍA</span>
+    <span class="eyebrow" style="color: var(--ink);" data-om-id="00055a4b:736">
+</span>
+  </div>
+
+  <!-- Bottom block: title + description -->
+  <div style="position: absolute; left: var(--pad-x); right: var(--pad-x); bottom: 88px; z-index: 2; display: grid; grid-template-columns: 1.4fr 1fr; gap: 64px; align-items: end;" data-om-id="00055a4b:737">
+    <div data-om-id="00055a4b:738">
+      <h2 class="title" style="color: var(--ink); font-size: 80px; line-height: 0.98; margin: 0 0 20px;" data-om-id="00055a4b:739">Robots cuadrúpedos para <span class="serif-display" style="color: var(--accent);" data-om-id="00055a4b:740">mantenimiento preventivo</span>.</h2>
+      <p style="font-size: 28px; color: var(--ink); line-height: 1.35; margin: 0; max-width: 920px; opacity: 0.92;" data-om-id="00055a4b:741">Sensores y modelos de visión sobre la marcha — el robot recorre el túnel, genera mapas tridimensionales en tiempo real y anticipa fallas antes de que el equipo crítico se detenga.</p>
+    </div>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;" data-om-id="00055a4b:742">
+      <div style="background: rgba(11,14,22,0.7); backdrop-filter: blur(8px); border: 1px solid rgba(244,240,232,0.2); border-radius: 12px; padding: 22px 24px;" data-om-id="00055a4b:743">
+        <div style="font-family: var(--sans); font-size: 56px; font-weight: 500; color: var(--ink); line-height: 1; letter-spacing: -0.02em;" data-om-id="00055a4b:744">24/7</div>
+        <div style="font-family: var(--mono); font-size: 18px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent); margin-top: 10px;" data-om-id="00055a4b:745">Operación continua</div>
+      </div>
+      <div style="background: rgba(11,14,22,0.7); backdrop-filter: blur(8px); border: 1px solid rgba(244,240,232,0.2); border-radius: 12px; padding: 22px 24px;" data-om-id="00055a4b:746">
+        <div style="font-family: var(--sans); font-size: 56px; font-weight: 500; color: var(--ink); line-height: 1; letter-spacing: -0.02em;" data-om-id="00055a4b:747">0</div>
+        <div style="font-family: var(--mono); font-size: 18px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent); margin-top: 10px;" data-om-id="00055a4b:748">Riesgo humano</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer source -->
+  <div style="position: absolute; left: var(--pad-x); right: var(--pad-x); bottom: 28px; z-index: 2; display: flex; justify-content: space-between; align-items: baseline; font-family: var(--mono); font-size: 20px; letter-spacing: 0.06em; color: rgba(244,240,232,0.5);" data-om-id="00055a4b:749">
+    <span style="text-transform: uppercase;" data-om-id="00055a4b:750">IMAGEN: BOSTON DYNAMICS</span>
+    <span data-om-id="00055a4b:751"></span>
+  </div>
+</section><section data-label="18b Sección Agroexportación" data-om-id="7627d39e:710" data-screen-label="20 18b Sección Agroexportación" data-om-validate="no_overflowing_text,no_overlapping_text,slide_sized_text" data-deck-slide="19">
+  <div class="footer-row" style="top: 56px; bottom: auto;" data-om-id="7627d39e:711">
+    <span class="eyebrow" data-om-id="7627d39e:712"></span>
+    <span class="eyebrow" data-om-id="7627d39e:713"></span>
+  </div>
+
+  <div class="section-divider" data-om-id="7627d39e:714">
+    <div data-om-id="7627d39e:715">
+      <h2 class="section-num" data-om-id="7627d39e:716">06</h2>
+    </div>
+    <div style="padding-bottom: 24px;" data-om-id="7627d39e:717">
+      <p class="eyebrow" style="margin-bottom: 24px;" data-om-id="7627d39e:718">AGROEXPORTACIÓN</p>
+      <h3 class="section-name" style="margin-bottom: 40px;" data-om-id="7627d39e:719">Del campo al contenedor, sin papel.</h3>
+      <p class="section-blurb" data-om-id="7627d39e:720" data-cc-id="cc-2" style=""><br></p>
+    </div>
+  </div>
+</section>
+
+
+
+
+
+
+
+
+
+<!-- ============================================================ -->
+<!-- 11 · FOUR LAYERS                                              -->
+<!-- ============================================================ -->
+
+
+<!-- ============================================================ -->
+<!-- 12 · SECTION DIVIDER · BANCA                                  -->
+<!-- ============================================================ -->
+
+
+<!-- ============================================================ -->
+<!-- 13 · BANCA · Use case matrix                                  -->
+<!-- ============================================================ -->
+
+
+<!-- ============================================================ -->
+<!-- 14 · BANCA · CASE STUDY                                       -->
+<!-- ============================================================ -->
+
+
+<!-- ============================================================ -->
+<!-- 15 · SECTION DIVIDER · MINERÍA                                -->
+<!-- ============================================================ -->
+
+
+<!-- ============================================================ -->
+<!-- 16 · MINERÍA · Use case matrix                                -->
+<!-- ============================================================ -->
+
+
+<!-- ============================================================ -->
+<!-- 17 · MINERÍA · CASE STUDY                                     -->
+<!-- ============================================================ -->
+
+
+<!-- ============================================================ -->
+<!-- 18 · SECTION DIVIDER · AGROEXPORTACIÓN                        -->
+<!-- ============================================================ -->
+
+
+<!-- ============================================================ -->
+<!-- 19 · AGRO · Use case matrix                                   -->
+<!-- ============================================================ -->
+
+
+<!-- ============================================================ -->
+<!-- 20 · AGRO · CASE STUDY                                        -->
+<!-- ============================================================ -->
+
+
+<!-- ============================================================ -->
+<!-- 21 · COMMON PATTERN                                           -->
+<!-- ============================================================ -->
+
+
+
+
+
+
+
+
+
+
+<section data-label="20 Puerto Chancay · Agroexportación" style="padding: 0;" data-om-id="00055a4b:763" data-screen-label="21 20 Puerto Chancay · Agroexportación" data-om-validate="no_overflowing_text,no_overlapping_text,slide_sized_text" data-deck-slide="20">
+  <img src="assets/puerto-chancay.jpg" alt="Buque portacontenedores COSCO Shipping arribando al megapuerto de Chancay" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 0;" data-om-id="00055a4b:764">
+
+  <!-- Gradient overlay for legibility -->
+  <div style="position: absolute; inset: 0; background: linear-gradient(180deg, rgba(11,14,22,0.55) 0%, rgba(11,14,22,0.10) 35%, rgba(11,14,22,0.10) 60%, rgba(11,14,22,0.92) 100%); z-index: 1;" data-om-id="00055a4b:765"></div>
+
+  <!-- Top eyebrow -->
+  <div style="position: absolute; top: 56px; left: var(--pad-x); right: var(--pad-x); z-index: 2; display: flex; justify-content: space-between; align-items: baseline;" data-om-id="00055a4b:766">
+    <span class="eyebrow" style="color: var(--accent);" data-om-id="00055a4b:767"><span style="color: rgb(255, 255, 255);" data-om-id="00055a4b:768">CASO DE USO · AGROEXPORTACIÓN</span></span>
+    <span class="eyebrow" style="color: var(--ink);" data-om-id="00055a4b:769"><br data-om-id="00055a4b:770"></span>
+  </div>
+
+  <!-- Bottom block -->
+  <div style="position: absolute; left: var(--pad-x); right: var(--pad-x); bottom: 88px; z-index: 2; display: grid; grid-template-columns: 1.4fr 1fr; gap: 64px; align-items: end;" data-om-id="00055a4b:771">
+    <div data-om-id="00055a4b:772">
+      <h2 class="title" style="color: var(--ink); font-size: 78px; line-height: 0.98; margin: 0 0 20px;" data-om-id="00055a4b:773">Del campo al <span class="serif-display" style="color: var(--accent);" data-om-id="00055a4b:774">contenedor</span>, sin papel.</h2>
+      <p style="font-size: 28px; color: var(--ink); line-height: 1.35; margin: 0; max-width: 920px; opacity: 0.92;" data-om-id="00055a4b:775">Visión por computadora en línea de packing, optimización continua de la cadena de frío y trazabilidad digital del lote desde Chancay hasta la góndola del cliente final.</p>
+    </div>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;" data-om-id="00055a4b:776">
+      <div style="background: rgba(11,14,22,0.7); backdrop-filter: blur(8px); border: 1px solid rgba(244,240,232,0.2); border-radius: 12px; padding: 22px 24px;" data-om-id="00055a4b:777">
+        <div style="font-family: var(--sans); font-size: 56px; font-weight: 500; color: var(--ink); line-height: 1; letter-spacing: -0.02em;" data-om-id="00055a4b:778">100%</div>
+        <div style="font-family: var(--mono); font-size: 18px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent); margin-top: 10px;" data-om-id="00055a4b:779">Cobertura de inspección</div>
+      </div>
+      <div style="background: rgba(11,14,22,0.7); backdrop-filter: blur(8px); border: 1px solid rgba(244,240,232,0.2); border-radius: 12px; padding: 22px 24px;" data-om-id="00055a4b:780">
+        <div style="font-family: var(--sans); font-size: 56px; font-weight: 500; color: var(--ink); line-height: 1; letter-spacing: -0.02em;" data-om-id="00055a4b:781">23 d</div>
+        <div style="font-family: var(--mono); font-size: 18px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent); margin-top: 10px;" data-om-id="00055a4b:782">Chancay → Shanghái</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div style="position: absolute; left: var(--pad-x); right: var(--pad-x); bottom: 28px; z-index: 2; display: flex; justify-content: space-between; align-items: baseline; font-family: var(--mono); font-size: 20px; letter-spacing: 0.06em; color: rgba(244,240,232,0.5);" data-om-id="00055a4b:783">
+    <span style="text-transform: uppercase;" data-om-id="00055a4b:784">PUERTO DE CHANCAY · COSCO SHIPPING</span>
+    <span data-om-id="00055a4b:785"></span>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- 22 · CALL TO ACTION                                           -->
+<!-- ============================================================ -->
+
+
+<!-- ============================================================ -->
+<!-- 23 · THANK YOU / CONTACT                                      -->
+<!-- ============================================================ -->
+<section data-label="23 Gracias" data-nostamp="" data-om-id="00055a4b:786" data-screen-label="22 23 Gracias" data-om-validate="no_overflowing_text,no_overlapping_text,slide_sized_text" data-deck-slide="21" data-deck-last-visible="">
+  <div class="footer-row" style="top: 56px; bottom: auto;" data-om-id="00055a4b:787">
+    <span class="mark" data-om-id="00055a4b:788">
+      <svg class="mark-svg" viewBox="-8 -8 80 80" aria-hidden="true" style="width: 100px; height: 100px" data-om-id="00055a4b:789">
+        <rect x="8" y="10" width="6" height="44" fill="#F4F0E8" data-om-id="00055a4b:790"></rect>
+        <path d="M14 10 H30 a18 22 0 0 1 0 44 H14 V46 H30 a10 14 0 0 0 0 -28 H14 Z" fill="#F4F0E8" data-om-id="00055a4b:791"></path>
+        <path d="M22 22 L32 42 L42 22 H37 L32 32 L27 22 Z" fill="#2D5BFF" data-om-id="00055a4b:792"></path>
+        <path d="M8 56 H56 V60 H8 Z" fill="#F4F0E8" data-om-id="00055a4b:793"></path>
+        <circle cx="56" cy="10" r="3" fill="#2D5BFF" data-om-id="00055a4b:794"></circle>
+      </svg>
+      <span class="mark-text" style="" data-om-id="00055a4b:795"><br data-om-id="00055a4b:796"></span>
+    </span>
+    <span class="eyebrow" data-om-id="00055a4b:797">
+</span>
+  </div>
+
+  <div class="thanks" style="grid-template-columns: 1.1fr 0.9fr; align-items: center;" data-om-id="00055a4b:798">
+    <div data-om-id="00055a4b:799">
+      <h2 class="thanks-title" data-om-id="00055a4b:800">Gracias.<br data-om-id="00055a4b:801"><em style="color: var(--accent);" data-om-id="00055a4b:802">Conversemos.</em></h2>
+      <p style="font-family: var(--mono); font-size: 24px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-dim); margin: 40px 0 0;" data-om-id="00055a4b:803">Escanea para conectar en LinkedIn →</p>
+
+      <div class="contact-list" style="margin-top: 48px;" data-om-id="00055a4b:804">
+        <div class="contact-row" data-om-id="00055a4b:805">
+          <span class="lab" data-om-id="00055a4b:806">Email</span>
+          <span data-om-id="00055a4b:807">x@dennisvivas.com</span>
+        </div>
+        <div class="contact-row" data-om-id="00055a4b:808">
+          <span class="lab" data-om-id="00055a4b:809">Sitio</span>
+          <span data-om-id="00055a4b:810">dennisvivas.com</span>
+        </div>
+        <div class="contact-row" data-om-id="00055a4b:811">
+          <span class="lab" data-om-id="00055a4b:812">Hablemos de</span>
+          <span data-om-id="00055a4b:813">IA empresarial sobre Claude · Anthropic</span>
+        </div>
+      </div>
+    </div>
+
+    <div style="display: flex; flex-direction: column; align-items: center;" data-om-id="00055a4b:814">
+      <div style="background: #F4F0E8; border-radius: 18px; padding: 32px 32px 24px; max-width: 440px; width: 100%; box-shadow: 0 20px 60px rgba(0,0,0,0.4);" data-om-id="00055a4b:815">
+        <img src="assets/linkedin-qr-dennis.jpg" alt="Código QR para conectar con Dennis Vivas en LinkedIn" style="width: 100%; height: auto; display: block; border-radius: 8px;" data-om-id="00055a4b:816">
+      </div>
+      <div style="margin-top: 24px; text-align: center;" data-om-id="00055a4b:817">
+        <div style="font-family: var(--sans); font-size: 28px; font-weight: 500; color: var(--ink); letter-spacing: -0.01em;" data-om-id="00055a4b:818">Dennis Vivas Zelada</div>
+        <div style="font-family: var(--mono); font-size: 18px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); margin-top: 8px;" data-om-id="00055a4b:819">linkedin.com/in/dennisvivas</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+</deck-stage>
+
+<script>
+  (async () => {
+    try { await document.fonts.ready; } catch(e) {}
+    setTimeout(() => window.print(), 700);
+  })();
+</script>
+
+<script>
+(async () => {
+  try { await customElements.whenDefined('deck-stage'); } catch (e) {}
+  const ds = document.querySelector('deck-stage');
+  if (ds) {
+    // Weigh only slide children — same filter as deck-stage.length. Skipping
+    // slotted script/style/template keeps inline Babel/CSS from registering
+    // as stable "content" before the framework has mounted anything.
+    const weigh = () => {
+      let text = 0, media = 0;
+      for (const c of ds.children) {
+        const t = c.tagName;
+        if (t === 'SCRIPT' || t === 'STYLE' || t === 'TEMPLATE') continue;
+        text += (c.textContent || '').trim().length;
+        media += c.querySelectorAll('img,svg,canvas,video').length;
+      }
+      return text + media * 100;
+    };
+    const deadline = Date.now() + 15000;
+    let last = -1, stable = 0;
+    while (Date.now() < deadline) {
+      const n = weigh();
+      if (n > 0 && n === last) { if (++stable >= 2) break; } else { stable = 0; }
+      last = n;
+      await new Promise((r) => setTimeout(r, 250));
+    }
+  }
+  try { await document.fonts.ready; } catch (e) {}
+  setTimeout(() => { try { window.print(); } catch (e) {} }, 200);
+})();
+</script>
+</body></html>
